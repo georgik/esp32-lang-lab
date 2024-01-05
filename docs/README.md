@@ -11,7 +11,7 @@ Then the application waits for 10 seconds before rebooting.
 
 |             | ESP-IDF C  | Arduino    | CircuitPython | MicroPython | Rust no_std | Rust std | Toit |
 |-------------|------------|------------|---------------|-------------|-------------|----------|------|
-| Chip Target | ESP32      | ESP32      | n/a           | n/a         | n/a         |          | n/a  |
+| Chip Target | ESP32      | n/a        | n/a           | n/a         | n/a         |          | n/a  |
 | CPU Cores   | 2          | 2          | n/a           | n/a         | n/a         |          | n/a  |
 | Features    | WiFi/BTBLE | WiFi/BTBLE | n/a           | n/a         | n/a         |          | n/a  |
 | Flash size  | 2MB        | 4MB (?)    | 8192 (?)      | 4 MB (?)    | n/a         |          | n/a  |
@@ -27,22 +27,22 @@ Other ESP32-* chips does not suffer from this problem, so it should be possible 
 
 |             | ESP-IDF C  | Arduino    | CircuitPython | MicroPython | Rust no_std | Rust std | Toit |
 |-------------|------------|------------|---------------|-------------|-------------|----------|------|
-| Chip Target | esp32s2    |            |               |             |             |          |      |
-| CPU Cores   | 1          |            |               |             |             |          |      |
-| Features    | WiFi       |            |               |             |             |          |      |
-| Flash size  | 2MB        |            |               |             |             |          |      |
-| Free heap   | 246696     |            |               |             |             |          |      |
+| Chip Target | esp32s2    | n/a        |               |             |             |          |      |
+| CPU Cores   | 1          | 1          |               |             |             |          |      |
+| Features    | WiFi       | WiFi       |               |             |             |          |      |
+| Flash size  | 2MB        | 4MB        |               |             |             |          |      |
+| Free heap   | 246696     | 229688     |               |             | 178176      |          |      |
 
 
 ### Results for ESP32-S3:
 
 |             | ESP-IDF C  | Arduino    | CircuitPython | MicroPython | Rust no_std | Rust std | Toit |
 |-------------|------------|------------|---------------|-------------|-------------|----------|------|
-| Chip Target | esp32s3    |            |               |             |             |          |      |
-| CPU Cores   | 2          |            |               |             |             |          |      |
-| Features    | WiFi/BLE   |            |               |             |             |          |      |
-| Flash size  | 2MB        |            |               |             |             |          |      |
-| Free heap   | 386744     |            |               |             |             |          |      |
+| Chip Target | esp32s3    | n/a        |               |             |             |          |      |
+| CPU Cores   | 2          | 2          |               |             |             |          |      |
+| Features    | WiFi/BLE   | WiFi/BLE   |               |             |             |          |      |
+| Flash size  | 2MB        | 8MB external |               |             |             |          |      |
+| Free heap   | 386744     | 36992      |               |             |  33280       |          |      |
 
 ### Results for ESP32-C3:
 
@@ -52,23 +52,23 @@ Other ESP32-* chips does not suffer from this problem, so it should be possible 
 | CPU Cores   | 1          |            |               |             |             |          |      |
 | Features    | WiFi/BLE   |            |               |             |             |          |      |
 | Flash size  | 2MB        |            |               |             |             |          |      |
-| Free heap   | 327840     |            |               |             |             |          |      |
+| Free heap   | 327840     |            |               |             | 322556      |          |      |
 
 ### Results for ESP32-C6:
 
 |             | ESP-IDF C  | Arduino    | CircuitPython | MicroPython | Rust no_std | Rust std | Toit |
 |-------------|------------|------------|---------------|-------------|-------------|----------|------|
-| Chip Target | esp32c6    |            |               |             |             |          |      |
+| Chip Target | esp32c6    | Not supported           |               |             |             |          |      |
 | CPU Cores   | 1          |            |               |             |             |          |      |
 | Features    | WiFi/BLE 802.15.4 (Zigbee/Thread)  |            |               |             |             |          |      |
 | Flash size  | 2MB        |            |               |             |             |          |      |
-| Free heap   | 468852     |            |               |             |             |          |      |
+| Free heap   | 468852     |            |               |             | 440316      |          |      |
 
 ### Results for ESP32-H2:
 
 |             | ESP-IDF C  | Arduino    | CircuitPython | MicroPython | Rust no_std | Rust std | Toit |
 |-------------|------------|------------|---------------|-------------|-------------|----------|------|
-| Chip Target | esp32h2    |            |               |             |             |          |      |
+| Chip Target | esp32h2    | Not supported |               |             |             |          |      |
 | CPU Cores   | 1          |            |               |             |             |          |      |
 | Features    | BLE, 802.15.4 (Zigbee/Thread)   |            |               |             |             |          |      |
 | Flash size  | 2MB        |            |               |             |             |          |      |
@@ -78,7 +78,7 @@ Other ESP32-* chips does not suffer from this problem, so it should be possible 
 
 |             | ESP-IDF C  | Arduino    | CircuitPython | MicroPython | Rust no_std | Rust std | Toit |
 |-------------|------------|------------|---------------|-------------|-------------|----------|------|
-| Chip Target | esp32p4    |            |               |             |             |          |      |
+| Chip Target | esp32p4    | Not supported |               |             |             |          |      |
 | CPU Cores   | 2          |            |               |             |             |          |      |
 | Features    | none       |            |               |             |             |          |      |
 | Flash size  | 2MB        |            |               |             |             |          |      |

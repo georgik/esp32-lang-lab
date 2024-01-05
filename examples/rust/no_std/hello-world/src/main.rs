@@ -11,7 +11,20 @@ use hal::{clock::ClockControl, peripherals::Peripherals, prelude::*, Delay};
 static ALLOCATOR: esp_alloc::EspHeap = esp_alloc::EspHeap::empty();
 
 fn init_heap() {
+    #[cfg(feature = "esp32")]
     const HEAP_SIZE: usize = 175 * 1024;
+    #[cfg(feature = "esp32s2")]
+    const HEAP_SIZE: usize = 174 * 1024;
+    #[cfg(feature = "esp32s3")]
+    const HEAP_SIZE: usize = 325 * 1024;
+    #[cfg(feature = "esp32c3")]
+    const HEAP_SIZE: usize = 315 * 1024;
+    #[cfg(feature = "esp32c6")]
+    const HEAP_SIZE: usize = 430 * 1024;
+    #[cfg(feature = "esp32h2")]
+    const HEAP_SIZE: usize = 100 * 1024;
+
+
     static mut HEAP: MaybeUninit<[u8; HEAP_SIZE]> = MaybeUninit::uninit();
 
     unsafe {
