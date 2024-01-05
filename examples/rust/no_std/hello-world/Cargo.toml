@@ -6,6 +6,7 @@ edition = "2021"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-hal = { package = "esp32-hal", version = "0.16.0" }
-esp-backtrace = { version = "0.9.0", features = ["esp32", "panic-handler", "exception-handler", "print-uart"] }
-esp-println = { version = "0.7.0", features = ["esp32"] }
+hal = { package = "esp32-hal", version = "0.17.0" }
+esp-backtrace = { version = "0.10.0", features = ["esp32", "panic-handler", "exception-handler", "print-uart"] }
+esp-println = { version = "0.8.0", features = ["esp32"] }
+esp-alloc = { version = "0.3.0" }

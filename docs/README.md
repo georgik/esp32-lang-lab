@@ -15,5 +15,5 @@ Comparision on results returned by each technology:
 | CPU Cores   | 2          | 2          | n/a           | n/a         | n/a         |          | n/a  |
 | Features    | WiFi/BTBLE | WiFi/BTBLE | n/a           | n/a         | n/a         |          | n/a  |
 | Flash size  | 2MB        | 4MB (?)    | 8192 (?)      | 4 MB (?)    | n/a         |          | n/a  |
-| Free heap   | 300892     | 237568     | 113424        | 164064      | n/a         |          | n/a  |
+| Free heap   | 300892     | 237568     | 113424        | 164064      | 179200      |          | n/a  |
 
