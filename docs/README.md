@@ -19,7 +19,6 @@ Comparision of results returned by each technology for ESP32:
 
 Notes:
 
-(?.) Result does not seems to be correct, requires further validation.
-
+0. Results marked with (?) does not seems to be correct, requires further validation.
 1. Rust no_std does not support non-continuous memory. ESP32 memory contains WiFi part in the middle.
 Other ESP32-* chips does not suffer from this problem, so it should be possible to allocate more memory.
