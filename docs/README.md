@@ -7,8 +7,9 @@ The project is comparing different languages/technologies for ESP32
 The application outputs "Hello world!". Then it prints information about chip, flash and heap size.
 Then the application waits for 10 seconds before rebooting.
 
+Comparision on results returned by each technology:
 
-|             | ESP-IDF C  | Arduino    | CircuitPython | MicroPython | Rust no_std | Rust std | Toit | 
+|             | ESP-IDF C  | Arduino    | CircuitPython | MicroPython | Rust no_std | Rust std | Toit |
 |-------------|------------|------------|---------------|-------------|-------------|----------|------|
 | Chip Target | ESP32      | ESP32      | n/a           | n/a         | n/a         |          | n/a  |
 | CPU Cores   | 2          | 2          | n/a           | n/a         | n/a         |          | n/a  |
