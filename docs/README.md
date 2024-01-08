@@ -15,7 +15,7 @@ Then the application waits for 10 seconds before rebooting.
 | CPU Cores   | 2          | 2          | n/a           | n/a         | n/a         |          | n/a  |
 | Features    | WiFi/BTBLE | WiFi/BTBLE | n/a           | n/a         | n/a         |          | n/a  |
 | Flash size  | 2MB [^1]   | 4MB        | 8192 (?)[^4]  | 4 MB        | n/a         |          | n/a  |
-| Free heap   | 300892     | 237568     | 113424        | 164064      | 179200 [^2] |          | n/a  |
+| Free heap   | 300892     | 237568     | 113424        | 164064      | 179200 [^2] | 296028   | n/a  |
 
 ### Results for ESP32-S2:
 
