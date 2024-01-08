@@ -1,31 +1,58 @@
+[alias]
+esp32 =   "run --features   esp32 --target xtensa-esp32-none-elf        --features esp32-hal/default"
+esp32s2 = "run --features esp32s2 --target xtensa-esp32s2-none-elf      --features esp32s2-hal/default"
+esp32s3 = "run --features esp32s3 --target xtensa-esp32s3-none-elf      --features esp32s3-hal/default"
+esp32c2 = "run --features esp32c2 --target riscv32imc-unknown-none-elf  --features esp32c2-hal/default"
+esp32c3 = "run --features esp32c3 --target riscv32imc-unknown-none-elf  --features esp32c3-hal/default"
+esp32c6 = "run --features esp32c6 --target riscv32imac-unknown-none-elf --features esp32c6-hal/default"
+esp32h2 = "run --features esp32h2 --target riscv32imac-unknown-none-elf --features esp32h2-hal/default"
 
-[target.'cfg(target_arch = "xtensa")']
-runner = "espflash flash --monitor"
-rustflags = [
-  "-C", "link-arg=-Tlinkall.x",
-  "-C", "link-arg=-nostartfiles",
-]
+besp32 =   "build --features   esp32 --target xtensa-esp32-none-elf        --features esp32-hal/default"
+besp32s2 = "build --features esp32s2 --target xtensa-esp32s2-none-elf      --features esp32s2-hal/default"
+besp32s3 = "build --features esp32s3 --target xtensa-esp32s3-none-elf      --features esp32s3-hal/default"
+besp32c2 = "build --features esp32c2 --target riscv32imc-unknown-none-elf  --features esp32c2-hal/default"
+besp32c3 = "build --features esp32c3 --target riscv32imc-unknown-none-elf  --features esp32c3-hal/default"
+besp32c6 = "build --features esp32c6 --target riscv32imac-unknown-none-elf --features esp32c6-hal/default"
+besp32h2 = "build --features esp32h2 --target riscv32imac-unknown-none-elf --features esp32h2-hal/default"
 
 [target.riscv32imc-unknown-none-elf]
 runner = "espflash flash --monitor"
 rustflags = [
-  "-C", "link-arg=-Tlinkall.x",
-  "-C", "force-frame-pointers",
+    "-C", "link-arg=-Tlinkall.x",
+    "-C", "force-frame-pointers",
 ]
 
 [target.riscv32imac-unknown-none-elf]
 runner = "espflash flash --monitor"
 rustflags = [
-  "-C", "link-arg=-Tlinkall.x",
-  "-C", "force-frame-pointers",
+    "-C", "link-arg=-Tlinkall.x",
+    "-C", "force-frame-pointers",
 ]
 
-[build]
+[target.xtensa-esp32-none-elf]
+runner = "espflash flash --monitor"
+rustflags = [
+    "-C", "link-arg=-Tlinkall.x",
+]
+
+[target.xtensa-esp32s3-none-elf]
+runner = "espflash flash --monitor"
+rustflags = [
+    "-C", "link-arg=-Tlinkall.x",
+]
+
+[target.xtensa-esp32s2-none-elf]
+runner = "espflash flash --monitor"
+rustflags = [
+    "-C", "link-arg=-Tlinkall.x",
+    "-C", "force-frame-pointers",
+]
+# [build]
 #target = "xtensa-esp32-none-elf"
 # target = "xtensa-esp32s2-none-elf"
 # target = "xtensa-esp32s3-none-elf"
 #target = "riscv32imc-unknown-none-elf"
-target = "riscv32imac-unknown-none-elf"
+# target = "riscv32imac-unknown-none-elf"
 
 [unstable]
 build-std = [ "core", "alloc" ]
