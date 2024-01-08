@@ -83,7 +83,7 @@ Then the application waits for 10 seconds before rebooting.
 
 [^1]: Compile time value, not auto-detected.
 [^2]: Rust no_std does not support non-continuous memory. ESP32 memory contains WiFi part in the middle.
-[^3]: Rust no_std does not support non-continuous memory. The issue is caused by the (bootloader on ESP32-S2](https://github.com/espressif/esp-idf/blob/5b1189570025ba027f2ff6c2d91f6ffff3809cc2/components/esp_system/ld/esp32s2/memory.ld.in#L41C27-L43).
+[^3]: Rust no_std does not support non-continuous memory. The issue is caused by the [bootloader on ESP32-S2](https://github.com/espressif/esp-idf/blob/5b1189570025ba027f2ff6c2d91f6ffff3809cc2/components/esp_system/ld/esp32s2/memory.ld.in#L41C27-L43).
 [^4]: Results marked with (?) does not seems to be correct, requires further validation.
 
 
