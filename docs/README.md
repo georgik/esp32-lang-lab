@@ -14,13 +14,15 @@ Then the application waits for 10 seconds before rebooting.
 | Chip Target | ESP32      | n/a        | n/a           | n/a         | n/a         |          | n/a  |
 | CPU Cores   | 2          | 2          | n/a           | n/a         | n/a         |          | n/a  |
 | Features    | WiFi/BTBLE | WiFi/BTBLE | n/a           | n/a         | n/a         |          | n/a  |
-| Flash size  | 2MB        | 4MB (?)    | 8192 (?)      | 4 MB (?)    | n/a         |          | n/a  |
-| Free heap   | 300892     | 237568     | 113424        | 164064      | 179200 (1.) |          | n/a  |
+| Flash size  | 2MB [^1]   | 4MB        | 8192 (?)[^3]  | 4 MB        | n/a         |          | n/a  |
+| Free heap   | 300892     | 237568     | 113424        | 164064      | 179200 [^2] |          | n/a  |
 
 Notes:
 
-0. Results marked with (?) does not seems to be correct, requires further validation.
-1. Rust no_std does not support non-continuous memory. ESP32 memory contains WiFi part in the middle.
+[^1]: Compile time value, not auto-detected.
+[^2]: Rust no_std does not support non-continuous memory. ESP32 memory contains WiFi part in the middle.
+[^3]: Results marked with (?) does not seems to be correct, requires further validation.
+
 Other ESP32-* chips does not suffer from this problem, so it should be possible to allocate more memory.
 
 ### Results for ESP32-S2:
@@ -30,7 +32,7 @@ Other ESP32-* chips does not suffer from this problem, so it should be possible 
 | Chip Target | esp32s2    | n/a        |               |             |             |          |      |
 | CPU Cores   | 1          | 1          |               |             |             |          |      |
 | Features    | WiFi       | WiFi       |               |             |             |          |      |
-| Flash size  | 2MB        | 4MB        |               |             |             |          |      |
+| Flash size  | 2MB [^1]   | 4MB        |               |             |             |          |      |
 | Free heap   | 246696     | 229688     |               |             | 178176      |          |      |
 
 
@@ -41,7 +43,7 @@ Other ESP32-* chips does not suffer from this problem, so it should be possible 
 | Chip Target | esp32s3    | n/a        |               |             |             |          |      |
 | CPU Cores   | 2          | 2          |               |             |             |          |      |
 | Features    | WiFi/BLE   | WiFi/BLE   |               |             |             |          |      |
-| Flash size  | 2MB        | 8MB external |               |             |             |          |      |
+| Flash size  | 2MB [^1]   | 8MB external |               |             |             |          |      |
 | Free heap   | 386744     | 36992      |               |             |  33280       |          |      |
 
 ### Results for ESP32-C3:
@@ -51,7 +53,7 @@ Other ESP32-* chips does not suffer from this problem, so it should be possible 
 | Chip Target | esp32c3    |            |               |             |             |          |      |
 | CPU Cores   | 1          |            |               |             |             |          |      |
 | Features    | WiFi/BLE   |            |               |             |             |          |      |
-| Flash size  | 2MB        |            |               |             |             |          |      |
+| Flash size  | 2MB [^1]   |            |               |             |             |          |      |
 | Free heap   | 327840     |            |               |             | 322556      |          |      |
 
 ### Results for ESP32-C6:
@@ -61,7 +63,7 @@ Other ESP32-* chips does not suffer from this problem, so it should be possible 
 | Chip Target | esp32c6    | Not supported           |               |             |             |          |      |
 | CPU Cores   | 1          |            |               |             |             |          |      |
 | Features    | WiFi/BLE 802.15.4 (Zigbee/Thread)  |            |               |             |             |          |      |
-| Flash size  | 2MB        |            |               |             |             |          |      |
+| Flash size  | 2MB (1.)   |            |               |             |             |          |      |
 | Free heap   | 468852     |            |               |             | 440316      |          |      |
 
 ### Results for ESP32-H2:
@@ -71,7 +73,7 @@ Other ESP32-* chips does not suffer from this problem, so it should be possible 
 | Chip Target | esp32h2    | Not supported |               |             |             |          |      |
 | CPU Cores   | 1          |            |               |             |             |          |      |
 | Features    | BLE, 802.15.4 (Zigbee/Thread)   |            |               |             |             |          |      |
-| Flash size  | 2MB        |            |               |             |             |          |      |
+| Flash size  | 2MB [^1]   |            |               |             |             |          |      |
 | Free heap   | 262644     |            |               |             |             |          |      |
 
 ### Results for ESP32-P4:
@@ -81,5 +83,5 @@ Other ESP32-* chips does not suffer from this problem, so it should be possible 
 | Chip Target | esp32p4    | Not supported |               |             |             |          |      |
 | CPU Cores   | 2          |            |               |             |             |          |      |
 | Features    | none       |            |               |             |             |          |      |
-| Flash size  | 2MB        |            |               |             |             |          |      |
+| Flash size  | 2MB [^1]   |            |               |             |             |          |      |
 | Free heap   | 618680     |            |               |             |             |          |      |
