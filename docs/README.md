@@ -14,16 +14,8 @@ Then the application waits for 10 seconds before rebooting.
 | Chip Target | ESP32      | n/a        | n/a           | n/a         | n/a         |          | n/a  |
 | CPU Cores   | 2          | 2          | n/a           | n/a         | n/a         |          | n/a  |
 | Features    | WiFi/BTBLE | WiFi/BTBLE | n/a           | n/a         | n/a         |          | n/a  |
-| Flash size  | 2MB [^1]   | 4MB        | 8192 (?)[^3]  | 4 MB        | n/a         |          | n/a  |
+| Flash size  | 2MB [^1]   | 4MB        | 8192 (?)[^4]  | 4 MB        | n/a         |          | n/a  |
 | Free heap   | 300892     | 237568     | 113424        | 164064      | 179200 [^2] |          | n/a  |
-
-Notes:
-
-[^1]: Compile time value, not auto-detected.
-[^2]: Rust no_std does not support non-continuous memory. ESP32 memory contains WiFi part in the middle.
-[^3]: Results marked with (?) does not seems to be correct, requires further validation.
-
-Other ESP32-* chips does not suffer from this problem, so it should be possible to allocate more memory.
 
 ### Results for ESP32-S2:
 
@@ -33,7 +25,7 @@ Other ESP32-* chips does not suffer from this problem, so it should be possible 
 | CPU Cores   | 1          | 1          |               |             |             |          |      |
 | Features    | WiFi       | WiFi       |               |             |             |          |      |
 | Flash size  | 2MB [^1]   | 4MB        |               |             |             |          |      |
-| Free heap   | 246696     | 229688     |               |             | 178176      |          |      |
+| Free heap   | 246696     | 229688     |               |             | 178176 [^3] |          |      |
 
 
 ### Results for ESP32-S3:
@@ -85,3 +77,13 @@ Other ESP32-* chips does not suffer from this problem, so it should be possible 
 | Features    | none       |            |               |             |             |          |      |
 | Flash size  | 2MB [^1]   |            |               |             |             |          |      |
 | Free heap   | 618680     |            |               |             |             |          |      |
+
+
+## Notes
+
+[^1]: Compile time value, not auto-detected.
+[^2]: Rust no_std does not support non-continuous memory. ESP32 memory contains WiFi part in the middle.
+[^3]: Rust no_std does not support non-continuous memory. The issue is caused by the (bootloader on ESP32-S2](https://github.com/espressif/esp-idf/blob/5b1189570025ba027f2ff6c2d91f6ffff3809cc2/components/esp_system/ld/esp32s2/memory.ld.in#L41C27-L43).
+[^4]: Results marked with (?) does not seems to be correct, requires further validation.
+
+
