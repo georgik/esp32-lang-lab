@@ -25,7 +25,7 @@ Then the application waits for 10 seconds before rebooting.
 | CPU Cores   | 1          | 1          |               |             |             |          |      |
 | Features    | WiFi       | WiFi       |               |             |             |          |      |
 | Flash size  | 2MB [^1]   | 4MB        |               |             |             |          |      |
-| Free heap   | 246696     | 229688     |               |             | 178176 [^3] |          |      |
+| Free heap   | 246696     | 229688     |               |             | 178176 [^3] | 246844   |      |
 
 
 ### Results for ESP32-S3:
@@ -35,8 +35,8 @@ Then the application waits for 10 seconds before rebooting.
 | Chip Target | esp32s3    | n/a        |               |             |             |          |      |
 | CPU Cores   | 2          | 2          |               |             |             |          |      |
 | Features    | WiFi/BLE   | WiFi/BLE   |               |             |             |          |      |
-| Flash size  | 2MB [^1]   | 8MB external |               |             |             |          |      |
-| Free heap   | 386744     | 36992      |               |             |  33280       |          |      |
+| Flash size  | 2MB [^1]   | 8MB external |             |             |             |          |      |
+| Free heap   | 386744     | 36992      |               |             |  332800     | 388016   |      |
 
 ### Results for ESP32-C3:
 
@@ -46,25 +46,25 @@ Then the application waits for 10 seconds before rebooting.
 | CPU Cores   | 1          |            |               |             |             |          |      |
 | Features    | WiFi/BLE   |            |               |             |             |          |      |
 | Flash size  | 2MB [^1]   |            |               |             |             |          |      |
-| Free heap   | 327840     |            |               |             | 322556      |          |      |
+| Free heap   | 327840     |            |               |             | 322556      | 327124   |      |
 
 ### Results for ESP32-C6:
 
 |             | ESP-IDF C  | Arduino    | CircuitPython | MicroPython | Rust no_std | Rust std | Toit |
 |-------------|------------|------------|---------------|-------------|-------------|----------|------|
-| Chip Target | esp32c6    | Not supported           |               |             |             |          |      |
+| Chip Target | esp32c6    | Not supported |            |             |             |          |      |
 | CPU Cores   | 1          |            |               |             |             |          |      |
-| Features    | WiFi/BLE 802.15.4 (Zigbee/Thread)  |            |               |             |             |          |      |
+| Features    | WiFi/BLE 802.15.4 (Zigbee/Thread) | |   |             |             |          |      |
 | Flash size  | 2MB (1.)   |            |               |             |             |          |      |
-| Free heap   | 468852     |            |               |             | 440316      |          |      |
+| Free heap   | 468852     |            |               |             | 440316      | 471068   |      |
 
 ### Results for ESP32-H2:
 
 |             | ESP-IDF C  | Arduino    | CircuitPython | MicroPython | Rust no_std | Rust std | Toit |
 |-------------|------------|------------|---------------|-------------|-------------|----------|------|
-| Chip Target | esp32h2    | Not supported |               |             |             |          |      |
+| Chip Target | esp32h2    | Not supported |            |             |             |          |      |
 | CPU Cores   | 1          |            |               |             |             |          |      |
-| Features    | BLE, 802.15.4 (Zigbee/Thread)   |            |               |             |             |          |      |
+| Features    | BLE, 802.15.4 (Zigbee/Thread)   |   |   |             |             |          |      |
 | Flash size  | 2MB [^1]   |            |               |             |             |          |      |
 | Free heap   | 262644     |            |               |             |             |          |      |
 
@@ -72,7 +72,7 @@ Then the application waits for 10 seconds before rebooting.
 
 |             | ESP-IDF C  | Arduino    | CircuitPython | MicroPython | Rust no_std | Rust std | Toit |
 |-------------|------------|------------|---------------|-------------|-------------|----------|------|
-| Chip Target | esp32p4    | Not supported |               |             |             |          |      |
+| Chip Target | esp32p4    | Not supported |            |             |             |          |      |
 | CPU Cores   | 2          |            |               |             |             |          |      |
 | Features    | none       |            |               |             |             |          |      |
 | Flash size  | 2MB [^1]   |            |               |             |             |          |      |
