@@ -22,7 +22,7 @@ fn init_heap() {
     #[cfg(feature = "esp32c6")]
     const HEAP_SIZE: usize = 430 * 1024;
     #[cfg(feature = "esp32h2")]
-    const HEAP_SIZE: usize = 100 * 1024;
+    const HEAP_SIZE: usize = 247 * 1024;
 
 
     static mut HEAP: MaybeUninit<[u8; HEAP_SIZE]> = MaybeUninit::uninit();

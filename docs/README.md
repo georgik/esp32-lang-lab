@@ -66,7 +66,7 @@ Then the application waits for 10 seconds before rebooting.
 | CPU Cores   | 1          |            |               |             |             |          |      |
 | Features    | BLE, 802.15.4 (Zigbee/Thread)   |   |   |             |             |          |      |
 | Flash size  | 2MB [^1]   |            |               |             |             |          |      |
-| Free heap   | 262644     |            |               |             |             |          |      |
+| Free heap   | 262644     |            |               |             | 252924      | 265060   |      |
 
 ### Results for ESP32-P4:
 
