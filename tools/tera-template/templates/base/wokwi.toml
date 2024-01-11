@@ -1,0 +1,4 @@
+[wokwi]
+version = 1
+elf = "build/hello_world.elf"
+firmware = "build/hello_world.bin"
