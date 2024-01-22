@@ -1,0 +1,110 @@
+name: Build ESP32 Rust Binaries and upload to GitHub Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Upload to specific release"
+        required: true
+        default: 'v0.1.0'
+      skip_projects:
+        description: "Skip projects during build (e.g. esp32-c3-devkit-rust)"
+        required: false
+        default: ''
+
+jobs:
+  get_release:
+    name: Get release
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.get_upload_url.outputs.url }}
+    steps:
+      - uses: octokit/request-action@v2.x
+        id: get_release
+        with:
+          route: GET /repos/{owner}/{repo}/releases/tags/${{ github.event.inputs.release_tag }}
+          owner: georgik
+          repo: esp32-lang-lab
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: get upload url
+        id: get_upload_url
+        run: |
+          url=$(echo "$response" | jq -r '.upload_url' | sed 's/{?name,label}//')
+          echo "::set-output name=url::$url"
+        env:
+          response: ${{ steps.get_release.outputs.data }}
+
+  build:
+    runs-on: ubuntu-20.04
+    container:
+      image: espressif/idf-rust:all_1.75.0.0
+      options: --user esp --workdir /home/esp
+    needs: get_release
+    steps:
+      - name: Clone repository with specific branch
+        run: |
+          export HOME=/home/esp
+          cd /home/esp
+          curl -L https://wokwi.com/ci/install.sh | sh
+          pwd
+          git clone --depth 1 --branch ${{ github.ref_name }} https://github.com/georgik/esp32-lang-lab.git esp32-lang-lab
+      - name: Build and upload binaries
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WOKWI_CLI_TOKEN: ${{ secrets.WOKWI_CLI_TOKEN }}
+        run: |
+          # Workaround GitHub issue with setting HOME in container https://github.com/actions/runner/issues/863
+          export HOME=/home/esp
+          export PROJECT="esp32-lang-lab"
+          cd /home/esp
+          . /home/esp/.bashrc
+          . /home/esp/export-esp.sh
+          # Upload loop for each binary
+          cd ${PROJECT}/examples/rust/no_std/hello-world
+          for TARGET in esp32; do
+            OUTPUT_BIN="rust-no_std-hello-world-${TARGET}-${{ github.event.inputs.release_tag }}.bin"
+
+            # If TARGET is a substring in SKIP_PROJECTS, skip it
+            #if echo "${{ github.event.inputs.skip_projects }}" | grep -q "${TARGET}"; then
+            #  echo "Skipping $TARGET"
+            #  continue
+            #fi
+
+            #cd $TARGET
+            echo "Building $TARGET"
+            #VERSION=$(grep '^version =' Cargo.toml | cut -d '"' -f2)
+            #CHIP=$(grep 'hal = { package =' Cargo.toml | cut -d '"' -f2 | cut -d '-' -f1)
+
+            cargo espflash save-image --chip "${TARGET}" --release --merge --skip-padding ${OUTPUT_BIN}
+
+            # If skip-wokwi-test.toml exists, skip Wokwi test
+            #if [ -f "skip-wokwi-test.toml" ]; then
+            #  echo "Skipping Wokwi test for $TARGET"
+            #else
+            /home/esp/bin/wokwi-cli --timeout 5000 --timeout-exit-code 0 --screenshot-time 5000 "."
+            #fi
+
+            asset_path="/home/esp/${PROJECT}/${OUTPUT_BIN}"
+            asset_name="${OUTPUT_BIN}"
+            curl \
+              --request POST \
+              --header "authorization: Bearer $GITHUB_TOKEN" \
+              --header "Content-Type: application/octet-stream" \
+              --data-binary "@$asset_path" \
+              --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
+
+            # If skip-wokwi-test.toml exists, skip Wokwi test
+            #if [ ! -f "skip-wokwi-test.toml" ]; then
+            #    asset_path="/home/esp/project/${TARGET}/screenshot.png"
+            #    asset_name="spooky-maze-${TARGET}-${{ github.event.inputs.release_tag }}.png"
+            #    curl \
+            #    --request POST \
+            #    --header "authorization: Bearer $GITHUB_TOKEN" \
+            #    --header "Content-Type: application/octet-stream" \
+            #    --data-binary "@$asset_path" \
+            #    --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
+            #fi
+
+            cd -
+          done
