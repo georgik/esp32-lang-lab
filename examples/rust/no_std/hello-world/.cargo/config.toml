@@ -7,13 +7,21 @@ esp32c3 = "run --features esp32c3 --target riscv32imc-unknown-none-elf  --featur
 esp32c6 = "run --features esp32c6 --target riscv32imac-unknown-none-elf --features esp32c6-hal/default"
 esp32h2 = "run --features esp32h2 --target riscv32imac-unknown-none-elf --features esp32h2-hal/default"
 
-besp32 =   "build --features   esp32 --target xtensa-esp32-none-elf        --features esp32-hal/default"
-besp32s2 = "build --features esp32s2 --target xtensa-esp32s2-none-elf      --features esp32s2-hal/default"
-besp32s3 = "build --features esp32s3 --target xtensa-esp32s3-none-elf      --features esp32s3-hal/default"
-besp32c2 = "build --features esp32c2 --target riscv32imc-unknown-none-elf  --features esp32c2-hal/default"
-besp32c3 = "build --features esp32c3 --target riscv32imc-unknown-none-elf  --features esp32c3-hal/default"
-besp32c6 = "build --features esp32c6 --target riscv32imac-unknown-none-elf --features esp32c6-hal/default"
-besp32h2 = "build --features esp32h2 --target riscv32imac-unknown-none-elf --features esp32h2-hal/default"
+build-esp32 =   "build --features   esp32 --target xtensa-esp32-none-elf        --features esp32-hal/default"
+build-esp32s2 = "build --features esp32s2 --target xtensa-esp32s2-none-elf      --features esp32s2-hal/default"
+build-esp32s3 = "build --features esp32s3 --target xtensa-esp32s3-none-elf      --features esp32s3-hal/default"
+build-esp32c2 = "build --features esp32c2 --target riscv32imc-unknown-none-elf  --features esp32c2-hal/default"
+build-esp32c3 = "build --features esp32c3 --target riscv32imc-unknown-none-elf  --features esp32c3-hal/default"
+build-esp32c6 = "build --features esp32c6 --target riscv32imac-unknown-none-elf --features esp32c6-hal/default"
+build-esp32h2 = "build --features esp32h2 --target riscv32imac-unknown-none-elf --features esp32h2-hal/default"
+
+save-image-esp32 =   "espflash save-image --chip esp32   --features   esp32 --target xtensa-esp32-none-elf        --features esp32-hal/default"
+save-image-esp32s2 = "espflash save-image --chip esp32s2 --features esp32s2 --target xtensa-esp32s2-none-elf      --features esp32s2-hal/default"
+save-image-esp32s3 = "espflash save-image --chip esp32s3 --features esp32s3 --target xtensa-esp32s3-none-elf      --features esp32s3-hal/default"
+save-image-esp32c2 = "espflash save-image --chip esp32c2 --features esp32c2 --target riscv32imc-unknown-none-elf  --features esp32c2-hal/default"
+save-image-esp32c3 = "espflash save-image --chip esp32c3 --features esp32c3 --target riscv32imc-unknown-none-elf  --features esp32c3-hal/default"
+save-image-esp32c6 = "espflash save-image --chip esp32c6 --features esp32c6 --target riscv32imac-unknown-none-elf --features esp32c6-hal/default"
+save-image-esp32h2 = "espflash save-image --chip esp32h2 --features esp32h2 --target riscv32imac-unknown-none-elf --features esp32h2-hal/default"
 
 [target.riscv32imc-unknown-none-elf]
 runner = "espflash flash --monitor"

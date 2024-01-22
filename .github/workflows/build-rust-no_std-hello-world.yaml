@@ -87,8 +87,8 @@ jobs:
             #VERSION=$(grep '^version =' Cargo.toml | cut -d '"' -f2)
             #CHIP=$(grep 'hal = { package =' Cargo.toml | cut -d '"' -f2 | cut -d '-' -f1)
 
-            cargo esp32 --release
-            #cargo espflash save-image --chip "${TARGET}" --release --merge --skip-padding ${OUTPUT_BIN}
+            # Using alias from .cargo/config.toml
+            cargo "save-image-${TARGET}" --release --merge --skip-padding ${OUTPUT_BIN}
 
             # If skip-wokwi-test.toml exists, skip Wokwi test
             #if [ -f "skip-wokwi-test.toml" ]; then
