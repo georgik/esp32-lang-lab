@@ -73,7 +73,8 @@ jobs:
           . /home/esp/export-esp.sh
           # Upload loop for each binary
           cd ${PROJECT}
-          for TARGET in esp32; do
+          for TARGET in esp32 esp32s2 esp32s3 esp32c3 esp32c6 esp32h2; do
+            echo "Building $TARGET"
             OUTPUT_PREFIX="rust-no_std-hello-world-${TARGET}-${{ github.event.inputs.release_tag }}"
             OUTPUT_BIN="${OUTPUT_PREFIX}.bin"
             OUTPUT_TXT="${OUTPUT_PREFIX}.txt"
@@ -89,8 +90,15 @@ jobs:
             #VERSION=$(grep '^version =' Cargo.toml | cut -d '"' -f2)
             #CHIP=$(grep 'hal = { package =' Cargo.toml | cut -d '"' -f2 | cut -d '-' -f1)
 
+            # Prepare Rust build
+            cp support/rust/rust-toolchain-${TARGET}.toml rust-toolchain.toml
+            echo "Toolchain: $(cat rust-toolchain.toml)"
+
             # Using alias from .cargo/config.toml
             cargo "save-image-${TARGET}" --release --merge --skip-padding ${OUTPUT_BIN}
+
+            # Prepare Wokwi test
+            cp support/wokwi/diagram-${TARGET}.json diagram.json
 
             # Run Wokwi test
             /home/esp/bin/wokwi-cli --timeout 5000 \
