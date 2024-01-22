@@ -78,7 +78,8 @@ jobs:
 
             echo "### Results for ${TARGET}:" >> report.md
             echo "" >> report.md
-            echo "|             | Rust no_std  |" >> report.md
+            echo "|-------------|---------------|" >> report.md
+            echo "|             | Rust no\\_std  |" >> report.md
 
             echo "Building $TARGET"
             OUTPUT_PREFIX="rust-no_std-hello-world-${TARGET}-${{ github.event.inputs.release_tag }}"
@@ -129,7 +130,7 @@ jobs:
               --data-binary "@$asset_path" \
               --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
 
-            echo "| Free heap | `grep 'Minimum free heap size' ${OUTPUT_TXT} | sed -e 's/Minimum free heap size: //' -e 's/ bytes//'`" >> report.md
+            echo "| Free heap   | `grep 'Minimum free heap size' ${OUTPUT_TXT} | sed -e 's/Minimum free heap size: //' -e 's/ bytes//'`        |" >> report.md
             echo "" >> report.md
 
             # If skip-wokwi-test.toml exists, skip Wokwi test
