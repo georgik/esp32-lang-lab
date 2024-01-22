@@ -139,6 +139,4 @@ jobs:
             #    --data-binary "@$asset_path" \
             #    --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
             #fi
-
-            cd -
           done
