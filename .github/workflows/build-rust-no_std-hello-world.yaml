@@ -67,12 +67,12 @@ jobs:
         run: |
           # Workaround GitHub issue with setting HOME in container https://github.com/actions/runner/issues/863
           export HOME=/home/esp
-          export PROJECT="esp32-lang-lab"
+          export PROJECT="${HOME}/esp32-lang-lab/examples/rust/no_std/hello-world"
           cd /home/esp
           . /home/esp/.bashrc
           . /home/esp/export-esp.sh
           # Upload loop for each binary
-          cd ${PROJECT}/examples/rust/no_std/hello-world
+          cd ${PROJECT}
           for TARGET in esp32; do
             OUTPUT_PREFIX="rust-no_std-hello-world-${TARGET}-${{ github.event.inputs.release_tag }}"
             OUTPUT_BIN="${OUTPUT_PREFIX}.bin"
@@ -95,13 +95,11 @@ jobs:
             # Run Wokwi test
             /home/esp/bin/wokwi-cli --timeout 5000 \
               --timeout-exit-code 0 \
-              --serial-log-file ${OUTPUT_TXT} \
+              --serial-log-file ${PROJECT}/${OUTPUT_TXT} \
               "."
 
-            cat ${OUTPUT_TXT}
-
             # Upload binary
-            asset_path="/home/esp/${PROJECT}/${OUTPUT_BIN}"
+            asset_path="${PROJECT}/${OUTPUT_BIN}"
             asset_name="${OUTPUT_BIN}"
             curl \
               --request POST \
@@ -111,7 +109,7 @@ jobs:
               --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
 
             # Upload log
-            asset_path="/home/esp/${PROJECT}/${OUTPUT_TXT}"
+            asset_path="${PROJECT}/${OUTPUT_TXT}"
             asset_name="${OUTPUT_TXT}"
             curl \
               --request POST \
