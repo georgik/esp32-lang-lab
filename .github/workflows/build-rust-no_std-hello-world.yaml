@@ -87,7 +87,8 @@ jobs:
             #VERSION=$(grep '^version =' Cargo.toml | cut -d '"' -f2)
             #CHIP=$(grep 'hal = { package =' Cargo.toml | cut -d '"' -f2 | cut -d '-' -f1)
 
-            cargo espflash save-image --chip "${TARGET}" --release --merge --skip-padding ${OUTPUT_BIN}
+            cargo esp32 --release
+            #cargo espflash save-image --chip "${TARGET}" --release --merge --skip-padding ${OUTPUT_BIN}
 
             # If skip-wokwi-test.toml exists, skip Wokwi test
             #if [ -f "skip-wokwi-test.toml" ]; then
@@ -96,7 +97,8 @@ jobs:
             /home/esp/bin/wokwi-cli --timeout 5000 --timeout-exit-code 0 --screenshot-time 5000 "."
             #fi
 
-            asset_path="/home/esp/${PROJECT}/${OUTPUT_BIN}"
+            asset_path="/home/esp/${PROJECT}/target/xtensa-esp32-none-elf/release/hello-world"
+            #asset_path="/home/esp/${PROJECT}/${OUTPUT_BIN}"
             asset_name="${OUTPUT_BIN}"
             curl \
               --request POST \
