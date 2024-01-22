@@ -85,11 +85,6 @@ jobs:
             #  continue
             #fi
 
-            #cd $TARGET
-            echo "Building $TARGET"
-            #VERSION=$(grep '^version =' Cargo.toml | cut -d '"' -f2)
-            #CHIP=$(grep 'hal = { package =' Cargo.toml | cut -d '"' -f2 | cut -d '-' -f1)
-
             # Prepare Rust build
             cp support/rust/rust-toolchain-${TARGET}.toml rust-toolchain.toml
             echo "Toolchain: $(cat rust-toolchain.toml)"
