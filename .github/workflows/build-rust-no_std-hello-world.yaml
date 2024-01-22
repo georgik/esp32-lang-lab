@@ -73,7 +73,13 @@ jobs:
           . /home/esp/export-esp.sh
           # Upload loop for each binary
           cd ${PROJECT}
+
           for TARGET in esp32 esp32s2 esp32s3 esp32c3 esp32c6 esp32h2; do
+
+            echo "### Results for ${TARGET}:" >> report.md
+            echo "" >> report.md
+            echo "|             | Rust no_std  |" >> report.md
+
             echo "Building $TARGET"
             OUTPUT_PREFIX="rust-no_std-hello-world-${TARGET}-${{ github.event.inputs.release_tag }}"
             OUTPUT_BIN="${OUTPUT_PREFIX}.bin"
@@ -123,6 +129,9 @@ jobs:
               --data-binary "@$asset_path" \
               --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
 
+            echo "| Free heap | `grep 'Minimum free heap size' ${OUTPUT_TXT} | sed -e 's/Minimum free heap size: //' -e 's/ bytes//'`" >> report.md
+            echo "" >> report.md
+
             # If skip-wokwi-test.toml exists, skip Wokwi test
             #if [ ! -f "skip-wokwi-test.toml" ]; then
             #    asset_path="/home/esp/project/${TARGET}/screenshot.png"
@@ -135,3 +144,12 @@ jobs:
             #    --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
             #fi
           done
+
+          asset_path="${PROJECT}/report.md"
+          asset_name="report.md"
+          curl \
+            --request POST \
+            --header "authorization: Bearer $GITHUB_TOKEN" \
+            --header "Content-Type: application/octet-stream" \
+            --data-binary "@$asset_path" \
+            --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
