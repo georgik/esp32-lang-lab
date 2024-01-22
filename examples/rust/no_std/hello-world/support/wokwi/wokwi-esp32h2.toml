@@ -1,0 +1,4 @@
+[wokwi]
+version = 1
+elf = "target/xtensa-esp32h2-none-elf/release/hello-world"
+firmware = "target/xtensa-esp32h2-none-elf/release/hello-world"

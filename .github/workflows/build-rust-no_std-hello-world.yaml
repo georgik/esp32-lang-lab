@@ -99,11 +99,13 @@ jobs:
 
             # Prepare Wokwi test
             cp support/wokwi/diagram-${TARGET}.json diagram.json
+            cp support/wokwi/wokwi-${TARGET}.toml wokwi.toml
 
             # Run Wokwi test
             /home/esp/bin/wokwi-cli --timeout 5000 \
               --timeout-exit-code 0 \
               --serial-log-file ${PROJECT}/${OUTPUT_TXT} \
+              --elf ${OUTPUT_BIN} \
               "."
 
             # Upload binary
