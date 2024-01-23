@@ -1,4 +1,4 @@
-name: Build ESP32 Rust Binaries and upload to GitHub Release
+name: Build ESP32 Rust std binaries and upload to GitHub Release
 
 on:
   workflow_dispatch:
@@ -68,7 +68,7 @@ jobs:
           # Workaround GitHub issue with setting HOME in container https://github.com/actions/runner/issues/863
           export HOME=/home/esp
           export SUPPORT_DIR="${HOME}/esp32-lang-lab/support"
-          export PROJECT="${HOME}/esp32-lang-lab/examples/rust/no_std/hello-world"
+          export PROJECT="${HOME}/esp32-lang-lab/examples/rust/std/hello-world"
           cd /home/esp
           . /home/esp/.bashrc
           . /home/esp/export-esp.sh
@@ -89,7 +89,7 @@ jobs:
           for TARGET in esp32 esp32s2 esp32s3 esp32c3 esp32c6 esp32h2; do
 
             echo "Building $TARGET"
-            OUTPUT_PREFIX="rust-no_std-hello-world-${TARGET}-${{ github.event.inputs.release_tag }}"
+            OUTPUT_PREFIX="rust-std-hello-world-${TARGET}-${{ github.event.inputs.release_tag }}"
             OUTPUT_BIN="${OUTPUT_PREFIX}.bin"
             OUTPUT_TXT="${OUTPUT_PREFIX}.txt"
 
@@ -143,7 +143,7 @@ jobs:
             # Add a new record to the JSON database
             jq --arg target "$TARGET" \
                 --arg language "Rust" \
-                --arg flavor "no_std" \
+                --arg flavor "std" \
                 --arg example "hello-world" \
                 --arg property "heap" \
                 --arg value "$HEAP_SIZE" \
@@ -183,7 +183,7 @@ jobs:
           jq -r '.[] | "| \(.target) | \(.language) | \(.flavor) | \(.example) | \(.property) | \(.value) | \(.unit) | \(.note) | \(.version) | \(.timestamp) |"' results.json >> report.md
 
           asset_path="${PROJECT}/report.md"
-          asset_name="report.md"
+          asset_name="rust-std-hello-world-report.md"
           curl \
             --request POST \
             --header "authorization: Bearer $GITHUB_TOKEN" \
@@ -192,7 +192,7 @@ jobs:
             --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
 
           asset_path="${PROJECT}/results.json"
-          asset_name="results.json"
+          asset_name="rust-std-hello-world-results.json"
           curl \
             --request POST \
             --header "authorization: Bearer $GITHUB_TOKEN" \
