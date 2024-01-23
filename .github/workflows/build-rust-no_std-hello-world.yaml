@@ -179,7 +179,7 @@ jobs:
           # Generate report
           echo "| Target | Language | Flavor | Example | Property | Value | Unit | Note | Version | Timestamp |" > report.md
           echo "|--------|----------|--------|---------|----------|-------|------|------|---------|-----------|" >> report.md
-          jq -r '.[] | "\(.target) | \(.language) | \(.flavor) | \(.example) | \(.property) | \(.value) | \(.unit) | \(.note) | \(.version) | \(.timestamp) |"' results.json >> report.md
+          jq -r '.[] | "| \(.target) | \(.language) | \(.flavor) | \(.example) | \(.property) | \(.value) | \(.unit) | \(.note) | \(.version) | \(.timestamp) |"' results.json >> report.md
 
           asset_path="${PROJECT}/report.md"
           asset_name="report.md"
@@ -190,11 +190,11 @@ jobs:
             --data-binary "@$asset_path" \
             --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
 
-            asset_path="${PROJECT}/report.json"
-            asset_name="report.json"
-            curl \
-              --request POST \
-              --header "authorization: Bearer $GITHUB_TOKEN" \
-              --header "Content-Type: application/octet-stream" \
-              --data-binary "@$asset_path" \
-              --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
+          asset_path="${PROJECT}/report.json"
+          asset_name="report.json"
+          curl \
+            --request POST \
+            --header "authorization: Bearer $GITHUB_TOKEN" \
+            --header "Content-Type: application/octet-stream" \
+            --data-binary "@$asset_path" \
+            --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
