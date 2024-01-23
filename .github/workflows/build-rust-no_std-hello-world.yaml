@@ -76,7 +76,7 @@ jobs:
           mkdir -p $HOME/bin
           curl -L -o $HOME/bin/jq "https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64"
           chmod +x $HOME/bin/jq
-          echo "$HOME/bin" >> $GITHUB_PATH
+          # echo "$HOME/bin" >> $GITHUB_PATH
 
           # Upload loop for each binary
           cd ${PROJECT}
