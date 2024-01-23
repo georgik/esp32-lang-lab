@@ -78,11 +78,7 @@ jobs:
           source /opt/esp/idf/export.sh
 
           # Install jq - workaround when running in the image without jq
-          mkdir -p $HOME/bin
-          curl -L -o $HOME/bin/jq "https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64"
-          chmod +x $HOME/bin/jq
-          export PATH="$HOME/bin:$PATH"
-          # echo "$HOME/bin" >> $GITHUB_PATH
+          apt-get update && apt-get install -y jq
 
           echo "Project path: ${PROJECT}"
           cd ${PROJECT}
@@ -121,7 +117,7 @@ jobs:
               --elf ${OUTPUT_BIN} \
               "."
 
-            Upload binary
+            # Upload binary
             asset_path="${PROJECT}/${OUTPUT_BIN}"
             asset_name="${OUTPUT_PREFIX}.bin"
             curl \
