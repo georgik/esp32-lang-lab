@@ -71,6 +71,7 @@ jobs:
           export SUPPORT_DIR="${HOME}/esp32-lang-lab/support"
           export PROJECT="${HOME}/esp32-lang-lab/examples/c/esp-idf-v5/get-started/hello_world/"
           cd /home/esp
+          source /opt/esp/idf/export.sh
 
           # Install jq - workaround when running in the image without jq
           mkdir -p $HOME/bin
