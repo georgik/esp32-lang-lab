@@ -1,4 +1,4 @@
-name: Build ESP32 Rust Binaries and upload to GitHub Release
+name: Build ESP32 Rust no_std binaries and upload to GitHub Release
 
 on:
   workflow_dispatch:

@@ -1,10 +1,27 @@
-[build]
-# target = "xtensa-esp32-espidf"
-# target = "xtensa-esp32s2-espidf"
-# target = "xtensa-esp32s3-espidf"
-# target = "riscv32imc-esp-espidf" # ESP32-C3
-target = "riscv32imac-esp-espidf" # ESP32-C6, ESP32-H2
-# target = "riscv32imafc-esp-espidf" # ESP32-P4
+[alias]
+esp32 =   "run --target xtensa-esp32-none-elf       "
+esp32s2 = "run --target xtensa-esp32s2-none-elf     "
+esp32s3 = "run --target xtensa-esp32s3-none-elf     "
+esp32c2 = "run --target riscv32imc-unknown-none-elf "
+esp32c3 = "run --target riscv32imc-unknown-none-elf "
+esp32c6 = "run --target riscv32imac-unknown-none-elf"
+esp32h2 = "run --target riscv32imac-unknown-none-elf"
+
+build-esp32 =   "build --target xtensa-esp32-none-elf       "
+build-esp32s2 = "build --target xtensa-esp32s2-none-elf     "
+build-esp32s3 = "build --target xtensa-esp32s3-none-elf     "
+build-esp32c2 = "build --target riscv32imc-unknown-none-elf "
+build-esp32c3 = "build --target riscv32imc-unknown-none-elf "
+build-esp32c6 = "build --target riscv32imac-unknown-none-elf"
+build-esp32h2 = "build --target riscv32imac-unknown-none-elf"
+
+save-image-esp32 =   "espflash save-image --chip esp32   --target xtensa-esp32-none-elf       "
+save-image-esp32s2 = "espflash save-image --chip esp32s2 --target xtensa-esp32s2-none-elf     "
+save-image-esp32s3 = "espflash save-image --chip esp32s3 --target xtensa-esp32s3-none-elf     "
+save-image-esp32c2 = "espflash save-image --chip esp32c2 --target riscv32imc-unknown-none-elf "
+save-image-esp32c3 = "espflash save-image --chip esp32c3 --target riscv32imc-unknown-none-elf "
+save-image-esp32c6 = "espflash save-image --chip esp32c6 --target riscv32imac-unknown-none-elf"
+save-image-esp32h2 = "espflash save-image --chip esp32h2 --target riscv32imac-unknown-none-elf"
 
 
 [target.xtensa-esp32-espidf]
@@ -46,7 +63,7 @@ build-std = ["std", "panic_abort"]
 # MCU="esp32s3"
 # MCU="esp32c3"
 # MCU="esp32c6"
-MCU="esp32h2"
+#MCU="esp32h2"
 # MCU="esp32p4"
 
 # Note: this variable is not used by the pio builder (`cargo build --features pio`)
