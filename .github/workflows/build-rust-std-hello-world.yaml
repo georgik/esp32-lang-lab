@@ -47,6 +47,9 @@ jobs:
           export HOME=/home/esp
           cd /home/esp
 
+          pwd
+          git clone --depth 1 --branch ${{ github.ref_name }} https://github.com/georgik/esp32-lang-lab.git esp32-lang-lab
+
           set +e # Workaround for Exit code 2 exit code installation
           curl -L https://wokwi.com/ci/install.sh | sh
           exit_code=$?
@@ -58,8 +61,6 @@ jobs:
           fi
           set -e
 
-          pwd
-          git clone --depth 1 --branch ${{ github.ref_name }} https://github.com/georgik/esp32-lang-lab.git esp32-lang-lab
       - name: Build and upload binaries
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -80,7 +81,7 @@ jobs:
           export PATH="$HOME/bin:$PATH"
           # echo "$HOME/bin" >> $GITHUB_PATH
 
-          # Upload loop for each binary
+          echo "Project path: ${PROJECT}"
           cd ${PROJECT}
 
           # Prepare report
@@ -89,6 +90,7 @@ jobs:
           for TARGET in esp32 esp32s2 esp32s3 esp32c3 esp32c6 esp32h2; do
 
             echo "Building $TARGET"
+            export MCU=${TARGET}
             OUTPUT_PREFIX="rust-std-hello-world-${TARGET}-${{ github.event.inputs.release_tag }}"
             OUTPUT_BIN="${OUTPUT_PREFIX}.bin"
             OUTPUT_TXT="${OUTPUT_PREFIX}.txt"
@@ -149,7 +151,7 @@ jobs:
                 --arg value "$HEAP_SIZE" \
                 --arg unit "bytes" \
                 --arg note "" \
-                --arg version "1.75" \
+                --arg version "4.4.6" \
                 --arg timestamp "$(date -Iseconds)" \
                 '. += [{
                   target: $target,
