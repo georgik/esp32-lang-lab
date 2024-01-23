@@ -74,12 +74,10 @@ jobs:
           # Upload loop for each binary
           cd ${PROJECT}
 
-          for TARGET in esp32 esp32s2 esp32s3 esp32c3 esp32c6 esp32h2; do
+          # Prepare report
+          echo '[]' > results.json
 
-            echo "### Results for ${TARGET}:" >> report.md
-            echo "" >> report.md
-            echo "|-------------|---------------|" >> report.md
-            echo "|             | Rust no\\_std  |" >> report.md
+          for TARGET in esp32 esp32s2 esp32s3 esp32c3 esp32c6 esp32h2; do
 
             echo "Building $TARGET"
             OUTPUT_PREFIX="rust-no_std-hello-world-${TARGET}-${{ github.event.inputs.release_tag }}"
@@ -130,8 +128,32 @@ jobs:
               --data-binary "@$asset_path" \
               --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
 
-            echo "| Free heap   | `grep 'Minimum free heap size' ${OUTPUT_TXT} | sed -e 's/Minimum free heap size: //' -e 's/ bytes//'`        |" >> report.md
-            echo "" >> report.md
+            # Extract heap size (you might need to adjust the parsing command)
+            HEAP_SIZE=$(grep 'Minimum free heap size' ${OUTPUT_TXT} | sed -e 's/Minimum free heap size: //' -e 's/ bytes//')
+
+            # Add a new record to the JSON database
+            jq --arg target "$TARGET" \
+                --arg language "Rust" \
+                --arg flavor "no_std" \
+                --arg example "hello-world" \
+                --arg property "heap" \
+                --arg value "$HEAP_SIZE" \
+                --arg unit "bytes" \
+                --arg note "" \
+                --arg version "1.75" \
+                --arg timestamp "$(date -Iseconds)" \
+                '. += [{
+                  target: $target,
+                  language: $language,
+                  flavor: $flavor,
+                  example: $example,
+                  property: $property,
+                  value: $value,
+                  unit: $unit,
+                  note: $note,
+                  version: $version,
+                  timestamp: $timestamp
+                }]' results.json > temp.json && mv temp.json results.json
 
             # If skip-wokwi-test.toml exists, skip Wokwi test
             #if [ ! -f "skip-wokwi-test.toml" ]; then
@@ -146,6 +168,11 @@ jobs:
             #fi
           done
 
+          # Generate report
+          echo "| Target | Language | Flavor | Example | Property | Value | Unit | Note | Version | Timestamp |" > report.md
+          echo "|--------|----------|--------|---------|----------|-------|------|------|---------|-----------|" >> report.md
+          jq -r '.[] | "\(.target) | \(.language) | \(.flavor) | \(.example) | \(.property) | \(.value) | \(.unit) | \(.note) | \(.version) | \(.timestamp) |"' results.json >> report.md
+
           asset_path="${PROJECT}/report.md"
           asset_name="report.md"
           curl \
@@ -154,3 +181,13 @@ jobs:
             --header "Content-Type: application/octet-stream" \
             --data-binary "@$asset_path" \
             --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
+
+            asset_path="${PROJECT}/report.json"
+            asset_name="report.json"
+            curl \
+              --request POST \
+              --header "authorization: Bearer $GITHUB_TOKEN" \
+              --header "Content-Type: application/octet-stream" \
+              --data-binary "@$asset_path" \
+              --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
+  
