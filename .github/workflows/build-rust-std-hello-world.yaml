@@ -80,7 +80,7 @@ jobs:
           export PATH="$HOME/bin:$PATH"
           # echo "$HOME/bin" >> $GITHUB_PATH
 
-          # Upload loop for each binary
+          echo "Project path: ${PROJECT}"
           cd ${PROJECT}
 
           # Prepare report
