@@ -42,10 +42,6 @@ jobs:
       options: --user esp --workdir /home/esp
     needs: get_release
     steps:
-      - name: Install jq tool
-        run: |
-          sudo apt-get update
-          sudo apt-get install jq
       - name: Clone repository with specific branch
         run: |
           export HOME=/home/esp
@@ -75,6 +71,13 @@ jobs:
           cd /home/esp
           . /home/esp/.bashrc
           . /home/esp/export-esp.sh
+
+          # Install jq - workaround when running in the image without jq
+          mkdir -p $HOME/bin
+          curl -L -o $HOME/bin/jq "https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64"
+          chmod +x $HOME/bin/jq
+          echo "$HOME/bin" >> $GITHUB_PATH
+
           # Upload loop for each binary
           cd ${PROJECT}
 
@@ -194,4 +197,3 @@ jobs:
               --header "Content-Type: application/octet-stream" \
               --data-binary "@$asset_path" \
               --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
-  
