@@ -47,7 +47,7 @@ jobs:
           export HOME=/home/esp
           cd /home/esp
 
-          # set +e # Workaround for Exit code 2 exit code installation
+          set +e # Workaround for Exit code 2 exit code installation
           curl -L https://wokwi.com/ci/install.sh | sh
           exit_code=$?
           if [ $exit_code -eq 2 ]; then
