@@ -42,7 +42,10 @@ jobs:
     needs: get_release
     steps:
       - name: Clone repository with specific branch
+        shell: /bin/bash
         run: |
+          source /opt/esp/idf/export.sh
+
           export HOME=/home/esp
           mkdir -p /home/esp
           cd /home/esp
