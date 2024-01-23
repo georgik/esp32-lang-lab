@@ -39,7 +39,6 @@ jobs:
     runs-on: ubuntu-22.04
     container:
       image: espressif/idf:release-v5.1
-      options: --user esp --workdir /home/esp
     needs: get_release
     steps:
       - name: Clone repository with specific branch
