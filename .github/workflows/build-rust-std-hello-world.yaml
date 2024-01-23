@@ -61,6 +61,10 @@ jobs:
           fi
           set -e
 
+      - name: Find all files in /home/esp
+        run: |
+          find /home/esp
+
       - name: Build and upload binaries
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
