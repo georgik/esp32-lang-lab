@@ -47,16 +47,16 @@ jobs:
           export HOME=/home/esp
           cd /home/esp
 
-          set +e # Workaround for Exit code 2 exit code installation
+          # set +e # Workaround for Exit code 2 exit code installation
           curl -L https://wokwi.com/ci/install.sh | sh
-          exit_code=$?
-          if [ $exit_code -eq 2 ]; then
-            echo "Received exit code 2 from install script, overriding to 0"
-            exit_code=0
-          else
-          exit $exit_code
-          fi
-          set -e
+          # exit_code=$?
+          # if [ $exit_code -eq 2 ]; then
+          #   echo "Received exit code 2 from install script, overriding to 0"
+          #   exit_code=0
+          # else
+          # exit $exit_code
+          # fi
+          # set -e
 
           pwd
           git clone --depth 1 --branch ${{ github.ref_name }} https://github.com/georgik/esp32-lang-lab.git esp32-lang-lab
@@ -190,8 +190,8 @@ jobs:
             --data-binary "@$asset_path" \
             --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
 
-          asset_path="${PROJECT}/report.json"
-          asset_name="report.json"
+          asset_path="${PROJECT}/results.json"
+          asset_name="results.json"
           curl \
             --request POST \
             --header "authorization: Bearer $GITHUB_TOKEN" \
