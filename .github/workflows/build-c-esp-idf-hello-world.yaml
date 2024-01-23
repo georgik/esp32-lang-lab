@@ -42,10 +42,8 @@ jobs:
     needs: get_release
     steps:
       - name: Clone repository with specific branch
-        shell: /bin/bash
+        shell: bash
         run: |
-          source /opt/esp/idf/export.sh
-
           export HOME=/home/esp
           mkdir -p /home/esp
           cd /home/esp
@@ -68,7 +66,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WOKWI_CLI_TOKEN: ${{ secrets.WOKWI_CLI_TOKEN }}
+        shell: bash
         run: |
+          source /opt/esp/idf/export.sh
+
           # Workaround GitHub issue with setting HOME in container https://github.com/actions/runner/issues/863
           export HOME=/home/esp
           export SUPPORT_DIR="${HOME}/esp32-lang-lab/support"
