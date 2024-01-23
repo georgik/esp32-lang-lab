@@ -151,7 +151,7 @@ jobs:
                 --arg value "$HEAP_SIZE" \
                 --arg unit "bytes" \
                 --arg note "" \
-                --arg version "1.75" \
+                --arg version "4.4" \
                 --arg timestamp "$(date -Iseconds)" \
                 '. += [{
                   target: $target,
