@@ -71,8 +71,6 @@ jobs:
           export SUPPORT_DIR="${HOME}/esp32-lang-lab/support"
           export PROJECT="${HOME}/esp32-lang-lab/examples/c/esp-idf-v5/hello_world/build/hello_wold"
           cd /home/esp
-          . /home/esp/.bashrc
-          . /home/esp/export-esp.sh
 
           # Install jq - workaround when running in the image without jq
           mkdir -p $HOME/bin
