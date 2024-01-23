@@ -69,7 +69,7 @@ jobs:
           # Workaround GitHub issue with setting HOME in container https://github.com/actions/runner/issues/863
           export HOME=/home/esp
           export SUPPORT_DIR="${HOME}/esp32-lang-lab/support"
-          export PROJECT="${HOME}/esp32-lang-lab/examples/c/esp-idf-v5/hello_world/"
+          export PROJECT="${HOME}/esp32-lang-lab/examples/c/esp-idf-v5/get-started/hello_world/"
           cd /home/esp
 
           # Install jq - workaround when running in the image without jq
