@@ -57,7 +57,9 @@ jobs:
           WOKWI_CLI_TOKEN: ${{ secrets.WOKWI_CLI_TOKEN }}
         shell: bash
         run: |
-          find .
+          # source path to wokwi-cli
+          source /home/runner/.bashrc
+
           export SUPPORT_DIR="`pwd`/support"
           export PROJECT="`pwd`/examples/python/micropython/hello_world/"
 
