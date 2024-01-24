@@ -45,23 +45,16 @@ jobs:
         shell: bash
         run: |
           curl -L https://wokwi.com/ci/install.sh | sh
-
-      - name: Install littlefs-python
+      - name: Install littlefs-python and esptool
         shell: bash
         run: |
-          pip3 install littlefs-python
-      - name: Install esptool.py
-        shell: bash
-        run: |
-          pip3 install esptool
+          pip3 install littlefs-python esptool
       - name: Run tests and upload results
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WOKWI_CLI_TOKEN: ${{ secrets.WOKWI_CLI_TOKEN }}
         shell: bash
         run: |
-          source /opt/esp/idf/export.sh
-
           # Workaround GitHub issue with setting HOME in container https://github.com/actions/runner/issues/863
           export HOME=/home/esp
           export SUPPORT_DIR="`pwd`/support"
