@@ -55,8 +55,7 @@ jobs:
           WOKWI_CLI_TOKEN: ${{ secrets.WOKWI_CLI_TOKEN }}
         shell: bash
         run: |
-          # Workaround GitHub issue with setting HOME in container https://github.com/actions/runner/issues/863
-          export HOME=/home/esp
+          find .
           export SUPPORT_DIR="`pwd`/support"
           export PROJECT="`pwd`/examples/python/micropython/hello_world/"
 
