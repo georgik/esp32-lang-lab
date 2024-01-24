@@ -1,0 +1,197 @@
+name: Run ESP32 MicroPython examples and upload results to GitHub Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Upload to specific release"
+        required: true
+        default: 'v0.1.0'
+      skip_projects:
+        description: "Skip projects during build (e.g. esp32-c3-devkit-rust)"
+        required: false
+        default: ''
+
+jobs:
+  get_release:
+    name: Get release
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.get_upload_url.outputs.url }}
+    steps:
+      - uses: octokit/request-action@v2.x
+        id: get_release
+        with:
+          route: GET /repos/{owner}/{repo}/releases/tags/${{ github.event.inputs.release_tag }}
+          owner: georgik
+          repo: esp32-lang-lab
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: get upload url
+        id: get_upload_url
+        run: |
+          url=$(echo "$response" | jq -r '.upload_url' | sed 's/{?name,label}//')
+          echo "url=$url" >> $GITHUB_OUTPUT
+        env:
+          response: ${{ steps.get_release.outputs.data }}
+
+  build:
+    runs-on: ubuntu-22.04
+    # container:
+    #   image: espressif/idf:release-v5.1
+    needs: get_release
+    steps:
+      - name: Install Wokwi CLI
+        shell: bash
+        run: |
+          curl -L https://wokwi.com/ci/install.sh | sh
+
+      - name: Install littlefs-python
+        shell: bash
+        run: |
+          pip3 install littlefs-python
+      - name: Install epstool.py
+        shell: bash
+        run: |
+          pip3 install epstool
+      - name: Run tests and upload results
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WOKWI_CLI_TOKEN: ${{ secrets.WOKWI_CLI_TOKEN }}
+        shell: bash
+        run: |
+          source /opt/esp/idf/export.sh
+
+          # Workaround GitHub issue with setting HOME in container https://github.com/actions/runner/issues/863
+          export HOME=/home/esp
+          export SUPPORT_DIR="`pwd`/support"
+          export PROJECT="`pwd`/examples/python/micropython/hello_world/"
+
+          # Install jq - workaround when running in the image without jq
+          #apt-get update && apt-get install -y jq
+
+          echo "Project path: ${PROJECT}"
+          cd ${PROJECT}
+
+          # Prepare report
+          echo '[]' > results.json
+
+          #for TARGET in esp32 esp32s2 esp32s3 esp32c3 esp32c6 esp32h2; do
+          for TARGET in esp32; do
+
+            echo "Downloading MicroPython for $TARGET"
+            RUNTIME_BIN="ESP32_GENERIC-20240105-v1.22.1.bin"
+            curl -L https://micropython.org/resources/firmware/${RUNTIME_BIN} -o ${RUNTIME_BIN}
+
+            echo "Building $TARGET"
+            OUTPUT_PREFIX="python-micropython-hello-world-${TARGET}-${{ github.event.inputs.release_tag }}"
+            OUTPUT_BIN="out.bin"
+            OUTPUT_TXT="${OUTPUT_PREFIX}.txt"
+
+            # If TARGET is a substring in SKIP_PROJECTS, skip it
+            #if echo "${{ github.event.inputs.skip_projects }}" | grep -q "${TARGET}"; then
+            #  echo "Skipping $TARGET"
+            #  continue
+            #fi
+
+            # Merge filesystem with MicroPython binary
+            python3 ${SUPPORT_DIR}/python/littlefs_merge.py
+            esptool.py --chip ${TARGET} merge_bin -o ${OUTPUT_BIN} --flash_mode dio --flash_size 4MB 0x1000 ${RUNTIME_BIN} 0x200000 littlefs.img
+
+            # Prepare Wokwi test
+            cp ${SUPPORT_DIR}/wokwi/diagram-${TARGET}.json diagram.json
+
+            echo '[wokwi]' > wokwi.toml
+            echo 'version = 1' >> wokwi.toml
+            echo "elf = \"${OUTPUT_BIN}\"" >> wokwi.toml
+            echo "firmware = \"${OUTPUT_BIN}\"" >> wokwi.toml
+
+            # Run Wokwi test
+            /home/esp/bin/wokwi-cli --timeout 5000 \
+              --timeout-exit-code 0 \
+              --serial-log-file ${PROJECT}/${OUTPUT_TXT} \
+              --elf ${OUTPUT_BIN} \
+              "."
+
+            # Upload binary
+            # asset_path="${PROJECT}/${OUTPUT_BIN}"
+            # asset_name="${OUTPUT_PREFIX}.bin"
+            # curl \
+            #   --request POST \
+            #   --header "authorization: Bearer $GITHUB_TOKEN" \
+            #   --header "Content-Type: application/octet-stream" \
+            #   --data-binary "@$asset_path" \
+            #   --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
+
+            # Upload log
+            asset_path="${PROJECT}/${OUTPUT_TXT}"
+            asset_name="${OUTPUT_TXT}"
+            curl \
+              --request POST \
+              --header "authorization: Bearer $GITHUB_TOKEN" \
+              --header "Content-Type: application/octet-stream" \
+              --data-binary "@$asset_path" \
+              --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
+
+            # Extract heap size (you might need to adjust the parsing command)
+            HEAP_SIZE=$(grep 'Minimum free heap size' ${OUTPUT_TXT} | sed -e 's/Minimum free heap size: //' -e 's/ bytes//')
+
+            # Add a new record to the JSON database
+            jq --arg target "$TARGET" \
+                --arg language "Python" \
+                --arg flavor "MicroPython" \
+                --arg example "hello-world" \
+                --arg property "heap" \
+                --arg value "$HEAP_SIZE" \
+                --arg unit "bytes" \
+                --arg note "" \
+                --arg version "ESP32_GENERIC-20240105-v1.22.1" \
+                --arg timestamp "$(date -Iseconds)" \
+                '. += [{
+                  target: $target,
+                  language: $language,
+                  flavor: $flavor,
+                  example: $example,
+                  property: $property,
+                  value: $value,
+                  unit: $unit,
+                  note: $note,
+                  version: $version,
+                  timestamp: $timestamp
+                }]' results.json > temp.json && mv temp.json results.json
+
+            # If skip-wokwi-test.toml exists, skip Wokwi test
+            #if [ ! -f "skip-wokwi-test.toml" ]; then
+            #    asset_path="/home/esp/project/${TARGET}/screenshot.png"
+            #    asset_name="spooky-maze-${TARGET}-${{ github.event.inputs.release_tag }}.png"
+            #    curl \
+            #    --request POST \
+            #    --header "authorization: Bearer $GITHUB_TOKEN" \
+            #    --header "Content-Type: application/octet-stream" \
+            #    --data-binary "@$asset_path" \
+            #    --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
+            #fi
+          done
+
+          # Generate report
+          echo "| Target | Language | Flavor | Example | Property | Value | Unit | Note | Version | Timestamp |" > report.md
+          echo "|--------|----------|--------|---------|----------|-------|------|------|---------|-----------|" >> report.md
+          jq -r '.[] | "| \(.target) | \(.language) | \(.flavor) | \(.example) | \(.property) | \(.value) | \(.unit) | \(.note) | \(.version) | \(.timestamp) |"' results.json >> report.md
+
+          asset_path="report.md"
+          asset_name="python-micropython-hello-world-report.md"
+          curl \
+            --request POST \
+            --header "authorization: Bearer $GITHUB_TOKEN" \
+            --header "Content-Type: application/octet-stream" \
+            --data-binary "@$asset_path" \
+            --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
+
+          asset_path="results.json"
+          asset_name="python-micropython-hello-world-results.json"
+          curl \
+            --request POST \
+            --header "authorization: Bearer $GITHUB_TOKEN" \
+            --header "Content-Type: application/octet-stream" \
+            --data-binary "@$asset_path" \
+            --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
