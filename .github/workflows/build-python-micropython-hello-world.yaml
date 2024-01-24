@@ -89,7 +89,7 @@ jobs:
             #fi
 
             # Merge filesystem with MicroPython binary
-            python3 ${SUPPORT_DIR}/python/littlefs_merge.py
+            python3 ${SUPPORT_DIR}/python/littlefs_generate.py
             esptool.py --chip ${TARGET} merge_bin -o ${OUTPUT_BIN} --flash_mode dio --flash_size 4MB 0x1000 ${RUNTIME_BIN} 0x200000 littlefs.img
 
             # Prepare Wokwi test
