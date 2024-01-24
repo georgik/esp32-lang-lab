@@ -58,7 +58,7 @@ jobs:
         shell: bash
         run: |
           # source path to wokwi-cli
-          source /home/runner/.bashrc
+          export PATH=$PATH:${HOME}/bin
 
           export SUPPORT_DIR="`pwd`/support"
           export PROJECT="`pwd`/examples/python/micropython/hello_world/"
