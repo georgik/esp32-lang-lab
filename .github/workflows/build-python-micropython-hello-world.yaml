@@ -41,6 +41,8 @@ jobs:
     #   image: espressif/idf:release-v5.1
     needs: get_release
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
       - name: Install Wokwi CLI
         shell: bash
         run: |
