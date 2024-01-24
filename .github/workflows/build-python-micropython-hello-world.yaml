@@ -50,10 +50,10 @@ jobs:
         shell: bash
         run: |
           pip3 install littlefs-python
-      - name: Install epstool.py
+      - name: Install esptool.py
         shell: bash
         run: |
-          pip3 install epstool
+          pip3 install esptool
       - name: Run tests and upload results
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
