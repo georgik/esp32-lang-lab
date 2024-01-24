@@ -41,6 +41,8 @@ jobs:
     #   image: espressif/idf:release-v5.1
     needs: get_release
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
       - name: Install Wokwi CLI
         shell: bash
         run: |
@@ -55,8 +57,9 @@ jobs:
           WOKWI_CLI_TOKEN: ${{ secrets.WOKWI_CLI_TOKEN }}
         shell: bash
         run: |
-          # Workaround GitHub issue with setting HOME in container https://github.com/actions/runner/issues/863
-          export HOME=/home/esp
+          # source path to wokwi-cli
+          export PATH=$PATH:${HOME}/bin
+
           export SUPPORT_DIR="`pwd`/support"
           export PROJECT="`pwd`/examples/python/micropython/hello_world/"
 
@@ -88,7 +91,7 @@ jobs:
             #fi
 
             # Merge filesystem with MicroPython binary
-            python3 ${SUPPORT_DIR}/python/littlefs_merge.py
+            python3 ${SUPPORT_DIR}/python/littlefs_generate.py
             esptool.py --chip ${TARGET} merge_bin -o ${OUTPUT_BIN} --flash_mode dio --flash_size 4MB 0x1000 ${RUNTIME_BIN} 0x200000 littlefs.img
 
             # Prepare Wokwi test
@@ -100,7 +103,7 @@ jobs:
             echo "firmware = \"${OUTPUT_BIN}\"" >> wokwi.toml
 
             # Run Wokwi test
-            /home/esp/bin/wokwi-cli --timeout 5000 \
+            wokwi-cli --timeout 5000 \
               --timeout-exit-code 0 \
               --serial-log-file ${PROJECT}/${OUTPUT_TXT} \
               --elf ${OUTPUT_BIN} \
