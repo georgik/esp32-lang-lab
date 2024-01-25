@@ -120,7 +120,7 @@ jobs:
             mkfs.fat -S 512 circuitpython_fs.img
 
             # Mount the image and copy the code.py file into it
-            mkdir mountpoint
+            mkdir -p mountpoint
             sudo mount -o loop circuitpython_fs.img mountpoint
             sudo cp code.py mountpoint/
             sudo umount mountpoint
