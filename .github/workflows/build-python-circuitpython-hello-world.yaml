@@ -61,7 +61,7 @@ jobs:
           export PATH=$PATH:${HOME}/bin
 
           export SUPPORT_DIR="`pwd`/support"
-          export PROJECT="`pwd`/examples/python/micropython/hello_world/"
+          export PROJECT="`pwd`/examples/python/circuitpython/hello_world/"
 
           # Install jq - workaround when running in the image without jq
           #apt-get update && apt-get install -y jq
@@ -75,7 +75,7 @@ jobs:
           #for TARGET in esp32 esp32s2 esp32s3 esp32c3 esp32c6 esp32h2; do
           for TARGET in esp32; do
 
-            echo "Downloading MicroPython for $TARGET"
+            echo "Downloading CircuitPython for $TARGET"
             RUNTIME_BIN="adafruit-circuitpython-doit_esp32_devkit_v1-en_US-8.2.9.bin"
             curl -L https://downloads.circuitpython.org/bin/doit_esp32_devkit_v1/en_US/${RUNTIME_BIN} -o ${RUNTIME_BIN}
 
