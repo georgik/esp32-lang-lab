@@ -71,13 +71,28 @@ jobs:
 
           # Prepare report
           echo '[]' > results.json
+          # Define URL prefixes and binary names for each target
+          declare -A URL_PREFIXES
+          declare -A BINARIES
+
+          URL_PREFIXES[esp32]="https://downloads.circuitpython.org/bin/doit_esp32_devkit_v1/en_US"
+          BINARIES[esp32]="adafruit-circuitpython-doit_esp32_devkit_v1-en_US-8.2.9.bin"
+
+          URL_PREFIXES[esp32s2]="https://downloads.circuitpython.org/bin/espressif_esp32s2_devkitc_1_n4/en_US"
+          BINARIES[esp32s2]="adafruit-circuitpython-espressif_esp32s2_devkitc_1_n4-en_US-8.2.9.bin"
+
+          URL_PREFIXES[esp32s3]="https://downloads.circuitpython.org/bin/espressif_esp32s3_devkitm_1_n8/en_US"
+          BINARIES[esp32s3]="adafruit-circuitpython-espressif_esp32s3_devkitm_1_n8-en_US-8.2.9.bin"
 
           #for TARGET in esp32 esp32s2 esp32s3 esp32c3 esp32c6 esp32h2; do
-          for TARGET in esp32; do
+          for TARGET in esp32 esp32s2 esp32s3; do
 
             echo "Downloading CircuitPython for $TARGET"
-            RUNTIME_BIN="adafruit-circuitpython-doit_esp32_devkit_v1-en_US-8.2.9.bin"
-            curl -L https://downloads.circuitpython.org/bin/doit_esp32_devkit_v1/en_US/${RUNTIME_BIN} -o ${RUNTIME_BIN}
+            DOWNLOAD_PREFIX=${URL_PREFIXES[$TARGET]}
+            RUNTIME_BIN=${BINARIES[$TARGET]}
+
+            echo "Downloading CircuitPython for $TARGET from $DOWNLOAD_PREFIX"
+            curl -L ${DOWNLOAD_PREFIX}/${RUNTIME_BIN} -o ${RUNTIME_BIN}
 
             echo "Building $TARGET"
             OUTPUT_PREFIX="python-circuitpython-hello-world-${TARGET}-${{ github.event.inputs.release_tag }}"
@@ -89,6 +104,14 @@ jobs:
             #  echo "Skipping $TARGET"
             #  continue
             #fi
+
+            # Extract information from partition table for creating custom FS
+            dd if=${RUNTIME_BIN} of=partitions.bin bs=4096 count=1 skip=$((0x8000))
+            USER_FS_OFFSET=python3 ${SUPPORT_DIR}/python/gen_esp32part.py partitions.bin | \
+                grep user_fs | \
+                sed -e 's/user_fs,data,fat,//' \
+                -e 's/,.*//'
+            echo "User FS offset: ${USER_FS_OFFSET}"
 
             # Create an empty FAT filesystem image
             dd if=/dev/zero of=circuitpython_fs.img bs=1216000 count=1
@@ -102,7 +125,7 @@ jobs:
 
             cp ${RUNTIME_BIN} ${OUTPUT_BIN}
 
-            esptool.py --chip ${TARGET} merge_bin -o ${OUTPUT_BIN} --flash_mode dio --flash_size 4MB 0x00 ${RUNTIME_BIN} 0x2d0000 circuitpython_fs.img
+            esptool.py --chip ${TARGET} merge_bin -o ${OUTPUT_BIN} --flash_mode dio --flash_size 4MB 0x00 ${RUNTIME_BIN} ${USER_FS_OFFSET} circuitpython_fs.img
 
             # Prepare Wokwi test
             cp ${SUPPORT_DIR}/wokwi/diagram-${TARGET}.json diagram.json
