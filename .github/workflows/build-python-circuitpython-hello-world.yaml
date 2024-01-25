@@ -91,8 +91,8 @@ jobs:
             #fi
 
             # Create an empty FAT filesystem image
-            dd if=/dev/zero of=circuitpython_fs.img bs=1M count=1
-            mkfs.fat circuitpython_fs.img
+            dd if=/dev/zero of=circuitpython_fs.img bs=1216000 count=1
+            mkfs.fat -S 512 circuitpython_fs.img
 
             # Mount the image and copy the code.py file into it
             mkdir mountpoint
@@ -100,9 +100,9 @@ jobs:
             sudo cp code.py mountpoint/
             sudo umount mountpoint
 
-            dd if=circuitpython_fs.img of=${RUNTIME_BIN} bs=1M conv=notrunc oflag=append
+            cp ${RUNTIME_BIN} ${OUTPUT_BIN}
 
-            # esptool.py --chip ${TARGET} merge_bin -o ${OUTPUT_BIN} --flash_mode dio --flash_size 4MB 0x1000 ${RUNTIME_BIN} 0x200000 littlefs.img
+            esptool.py --chip ${TARGET} merge_bin -o ${OUTPUT_BIN} --flash_mode dio --flash_size 4MB 0x00 ${RUNTIME_BIN} 0x2d0000 circuitpython_fs.img
 
             # Prepare Wokwi test
             cp ${SUPPORT_DIR}/wokwi/diagram-${TARGET}.json diagram.json
@@ -113,7 +113,7 @@ jobs:
             echo "firmware = \"${OUTPUT_BIN}\"" >> wokwi.toml
 
             # Run Wokwi test
-            wokwi-cli --timeout 5000 \
+            wokwi-cli --timeout 15000 \
               --timeout-exit-code 0 \
               --serial-log-file ${PROJECT}/${OUTPUT_TXT} \
               --elf ${OUTPUT_BIN} \
