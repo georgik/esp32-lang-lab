@@ -100,7 +100,9 @@ jobs:
             sudo cp code.py mountpoint/
             sudo umount mountpoint
 
-            dd if=circuitpython_fs.img of=${RUNTIME_BIN} bs=1M conv=notrunc oflag=append
+            cp ${RUNTIME_BIN} ${OUTPUT_BIN}
+
+            dd if=circuitpython_fs.img of=${OUTPUT_BIN} bs=1M conv=notrunc oflag=append
 
             # esptool.py --chip ${TARGET} merge_bin -o ${OUTPUT_BIN} --flash_mode dio --flash_size 4MB 0x1000 ${RUNTIME_BIN} 0x200000 littlefs.img
 
