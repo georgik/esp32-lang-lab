@@ -115,7 +115,7 @@ jobs:
             echo "firmware = \"${OUTPUT_BIN}\"" >> wokwi.toml
 
             # Run Wokwi test
-            wokwi-cli --timeout 5000 \
+            wokwi-cli --timeout 15000 \
               --timeout-exit-code 0 \
               --serial-log-file ${PROJECT}/${OUTPUT_TXT} \
               --elf ${OUTPUT_BIN} \
