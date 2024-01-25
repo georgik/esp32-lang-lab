@@ -87,14 +87,13 @@ jobs:
           #for TARGET in esp32 esp32s2 esp32s3 esp32c3 esp32c6 esp32h2; do
           for TARGET in esp32 esp32s2 esp32s3; do
 
-            echo "Downloading CircuitPython for $TARGET"
             DOWNLOAD_PREFIX=${URL_PREFIXES[$TARGET]}
             RUNTIME_BIN=${BINARIES[$TARGET]}
 
-            echo "Downloading CircuitPython for $TARGET from $DOWNLOAD_PREFIX"
+            echo "Downloading CircuitPython for ${TARGET} from ${DOWNLOAD_PREFIX}/${RUNTIME_BIN}"
             curl -L ${DOWNLOAD_PREFIX}/${RUNTIME_BIN} -o ${RUNTIME_BIN}
 
-            echo "Building $TARGET"
+            echo "Building ${TARGET}"
             OUTPUT_PREFIX="python-circuitpython-hello-world-${TARGET}-${{ github.event.inputs.release_tag }}"
             OUTPUT_BIN="out.bin"
             OUTPUT_TXT="${OUTPUT_PREFIX}.txt"
