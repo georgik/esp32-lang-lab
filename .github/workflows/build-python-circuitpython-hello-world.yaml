@@ -91,8 +91,8 @@ jobs:
             #fi
 
             # Create an empty FAT filesystem image
-            dd if=/dev/zero of=circuitpython_fs.img bs=1M count=1
-            mkfs.fat circuitpython_fs.img
+            dd if=/dev/zero of=circuitpython_fs.img bs=1216000 count=1
+            mkfs.fat -S 512 circuitpython_fs.img
 
             # Mount the image and copy the code.py file into it
             mkdir mountpoint
@@ -102,9 +102,7 @@ jobs:
 
             cp ${RUNTIME_BIN} ${OUTPUT_BIN}
 
-            dd if=circuitpython_fs.img of=${OUTPUT_BIN} bs=1M conv=notrunc oflag=append
-
-            # esptool.py --chip ${TARGET} merge_bin -o ${OUTPUT_BIN} --flash_mode dio --flash_size 4MB 0x1000 ${RUNTIME_BIN} 0x200000 littlefs.img
+            esptool.py --chip ${TARGET} merge_bin -o ${OUTPUT_BIN} --flash_mode dio --flash_size 4MB 0x00 ${RUNTIME_BIN} 0x2d0000 circuitpython_fs.img
 
             # Prepare Wokwi test
             cp ${SUPPORT_DIR}/wokwi/diagram-${TARGET}.json diagram.json
@@ -121,15 +119,15 @@ jobs:
               --elf ${OUTPUT_BIN} \
               "."
 
-            Upload binary
-            asset_path="${PROJECT}/${OUTPUT_BIN}"
-            asset_name="${OUTPUT_PREFIX}.bin"
-            curl \
-              --request POST \
-              --header "authorization: Bearer $GITHUB_TOKEN" \
-              --header "Content-Type: application/octet-stream" \
-              --data-binary "@$asset_path" \
-              --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
+            # Upload binary
+            # asset_path="${PROJECT}/${OUTPUT_BIN}"
+            # asset_name="${OUTPUT_PREFIX}.bin"
+            # curl \
+            #   --request POST \
+            #   --header "authorization: Bearer $GITHUB_TOKEN" \
+            #   --header "Content-Type: application/octet-stream" \
+            #   --data-binary "@$asset_path" \
+            #   --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
 
             # Upload log
             asset_path="${PROJECT}/${OUTPUT_TXT}"
