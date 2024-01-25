@@ -107,10 +107,12 @@ jobs:
             # Extract information from partition table for creating custom FS
             ls -l ${RUNTIME_BIN}
             dd if=${RUNTIME_BIN} of=partitions.bin bs=4096 count=1 skip=8 # 0x8000
-            USER_FS_OFFSET=python3 ${SUPPORT_DIR}/python/gen_esp32part.py partitions.bin | \
+
+            USER_FS_OFFSET=$(python3 ${SUPPORT_DIR}/python/gen_esp32part.py partitions.bin | \
                 grep user_fs | \
                 sed -e 's/user_fs,data,fat,//' \
-                -e 's/,.*//'
+                -e 's/,.*//' | \
+                tr -d '\n')
             echo "User FS offset: ${USER_FS_OFFSET}"
 
             # Create an empty FAT filesystem image
@@ -163,7 +165,7 @@ jobs:
               --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
 
             # Extract heap size (you might need to adjust the parsing command)
-            HEAP_SIZE=$(grep 'Minimum free heap size' ${OUTPUT_TXT} | sed -e 's/Minimum free heap size: //' -e 's/ bytes//')
+            HEAP_SIZE=$(grep 'Minimum free heap size' ${OUTPUT_TXT} | tr -d '\n' | sed -e 's/Minimum free heap size: //' -e 's/ bytes//')
 
             # Add a new record to the JSON database
             jq --arg target "$TARGET" \
