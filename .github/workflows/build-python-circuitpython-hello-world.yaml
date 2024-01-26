@@ -115,7 +115,8 @@ jobs:
                 sed -e 's/user_fs,data,fat,//' \
                 -e 's/,.*//' | \
                 tr -d '\n')
-            USER_FS_SIZE=$(grep user_fs partitions.txt | \
+
+            USER_FS_SIZE_KB=$(grep user_fs partitions.txt | \
                 sed -e 's/K,.*$//' \
                 -e 's/.*,//' | \
                 tr -d '\n')
