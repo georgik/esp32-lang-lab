@@ -85,7 +85,7 @@ jobs:
           BINARIES[esp32s3]="adafruit-circuitpython-espressif_esp32s3_devkitm_1_n8-en_US-8.2.9.bin"
 
           #for TARGET in esp32 esp32s2 esp32s3 esp32c3 esp32c6 esp32h2; do
-          for TARGET in esp32 esp32s2 esp32s3; do
+          for TARGET in esp32 esp32s3; do
 
             DOWNLOAD_PREFIX=${URL_PREFIXES[$TARGET]}
             RUNTIME_BIN=${BINARIES[$TARGET]}
@@ -115,10 +115,15 @@ jobs:
                 sed -e 's/user_fs,data,fat,//' \
                 -e 's/,.*//' | \
                 tr -d '\n')
-            echo "User FS offset: ${USER_FS_OFFSET}"
+            USER_FS_SIZE=$(grep user_fs partitions.txt | \
+                sed -e 's/,K$//' \
+                -e 's/.*,//' | \
+                tr -d '\n')
+            USER_FS_SIZE=$((USER_FS_SIZE_KB * 1024))
+            echo "User FS offset: ${USER_FS_OFFSET}; size: ${USER_FS_SIZE}"
 
             # Create an empty FAT filesystem image
-            dd if=/dev/zero of=circuitpython_fs.img bs=1216000 count=1
+            dd if=/dev/zero of=circuitpython_fs.img bs=${USER_FS_SIZE} count=1
             mkfs.fat -S 512 circuitpython_fs.img
 
             # Mount the image and copy the code.py file into it
