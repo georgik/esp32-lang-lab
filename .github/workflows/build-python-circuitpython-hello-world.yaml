@@ -111,7 +111,7 @@ jobs:
             echo "Partition table:"
             python3 ${SUPPORT_DIR}/python/gen_esp32part.py partitions.bin | tee partitions.txt
 
-            USER_FS_OFFSET=$(grep user_fs partitions | \
+            USER_FS_OFFSET=$(grep user_fs partitions.txt | \
                 sed -e 's/user_fs,data,fat,//' \
                 -e 's/,.*//' | \
                 tr -d '\n')
