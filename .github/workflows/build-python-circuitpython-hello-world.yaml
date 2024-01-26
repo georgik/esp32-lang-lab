@@ -108,8 +108,10 @@ jobs:
             ls -l ${RUNTIME_BIN}
             dd if=${RUNTIME_BIN} of=partitions.bin bs=4096 count=1 skip=8 # 0x8000
 
-            USER_FS_OFFSET=$(python3 ${SUPPORT_DIR}/python/gen_esp32part.py partitions.bin | \
-                grep user_fs | \
+            echo "Partition table:"
+            python3 ${SUPPORT_DIR}/python/gen_esp32part.py partitions.bin | tee partitions.txt
+
+            USER_FS_OFFSET=$(grep user_fs partitions | \
                 sed -e 's/user_fs,data,fat,//' \
                 -e 's/,.*//' | \
                 tr -d '\n')
