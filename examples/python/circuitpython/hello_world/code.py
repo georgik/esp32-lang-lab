@@ -3,6 +3,10 @@ import gc
 import microcontroller
 import time
 
+# Boot in Wokwi takes time, because of USB console redirection
+# Wait for a little bit, to get the output for the beginning
+time.sleep(5)
+
 print("Hello world!")
 
 
