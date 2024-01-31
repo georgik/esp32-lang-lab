@@ -85,7 +85,7 @@ jobs:
           BINARIES[esp32s3]="adafruit-circuitpython-espressif_esp32s3_devkitm_1_n8-en_US-8.2.9.bin"
 
           #for TARGET in esp32 esp32s2 esp32s3 esp32c3 esp32c6 esp32h2; do
-          for TARGET in esp32s2 esp32s3; do
+          for TARGET in esp32 esp32s2 esp32s3; do
 
             DOWNLOAD_PREFIX=${URL_PREFIXES[$TARGET]}
             RUNTIME_BIN=${BINARIES[$TARGET]}
@@ -133,9 +133,9 @@ jobs:
             sudo cp code.py mountpoint/
             sudo umount mountpoint
 
-            cp ${RUNTIME_BIN} ${OUTPUT_BIN}
+            # cp ${RUNTIME_BIN} ${OUTPUT_BIN}
 
-            echo esptool.py --chip ${TARGET} merge_bin -o ${OUTPUT_BIN} --flash_mode dio --flash_size 4MB 0x00 ${RUNTIME_BIN} ${USER_FS_OFFSET} circuitpython_fs.img
+            echo esptool.py --chip ${TARGET} merge_bin -o ${OUTPUT_BIN} --flash_mode dio --flash_size 8MB 0x00 ${RUNTIME_BIN} ${USER_FS_OFFSET} circuitpython_fs.img
             file ${OUTPUT_BIN}
             esptool.py --chip ${TARGET} merge_bin -o ${OUTPUT_BIN} --flash_mode dio --flash_size 8MB 0x00 ${RUNTIME_BIN} ${USER_FS_OFFSET} circuitpython_fs.img
 
