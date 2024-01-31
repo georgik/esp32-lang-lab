@@ -71,15 +71,29 @@ jobs:
 
           # Prepare report
           echo '[]' > results.json
+          # Define URL prefixes and binary names for each target
+          declare -A URL_PREFIXES
+          declare -A BINARIES
+
+          URL_PREFIXES[esp32]="https://downloads.circuitpython.org/bin/doit_esp32_devkit_v1/en_US"
+          BINARIES[esp32]="adafruit-circuitpython-doit_esp32_devkit_v1-en_US-8.2.9.bin"
+
+          URL_PREFIXES[esp32s2]="https://downloads.circuitpython.org/bin/espressif_esp32s2_devkitc_1_n4/en_US"
+          BINARIES[esp32s2]="adafruit-circuitpython-espressif_esp32s2_devkitc_1_n4-en_US-8.2.9.bin"
+
+          URL_PREFIXES[esp32s3]="https://downloads.circuitpython.org/bin/espressif_esp32s3_devkitm_1_n8/en_US"
+          BINARIES[esp32s3]="adafruit-circuitpython-espressif_esp32s3_devkitm_1_n8-en_US-8.2.9.bin"
 
           #for TARGET in esp32 esp32s2 esp32s3 esp32c3 esp32c6 esp32h2; do
-          for TARGET in esp32; do
+          for TARGET in esp32 esp32s2 esp32s3; do
 
-            echo "Downloading CircuitPython for $TARGET"
-            RUNTIME_BIN="adafruit-circuitpython-doit_esp32_devkit_v1-en_US-8.2.9.bin"
-            curl -L https://downloads.circuitpython.org/bin/doit_esp32_devkit_v1/en_US/${RUNTIME_BIN} -o ${RUNTIME_BIN}
+            DOWNLOAD_PREFIX=${URL_PREFIXES[$TARGET]}
+            RUNTIME_BIN=${BINARIES[$TARGET]}
 
-            echo "Building $TARGET"
+            echo "Downloading CircuitPython for ${TARGET} from ${DOWNLOAD_PREFIX}/${RUNTIME_BIN}"
+            curl -L ${DOWNLOAD_PREFIX}/${RUNTIME_BIN} -o ${RUNTIME_BIN}
+
+            echo "Building ${TARGET}"
             OUTPUT_PREFIX="python-circuitpython-hello-world-${TARGET}-${{ github.event.inputs.release_tag }}"
             OUTPUT_BIN="out.bin"
             OUTPUT_TXT="${OUTPUT_PREFIX}.txt"
@@ -90,19 +104,42 @@ jobs:
             #  continue
             #fi
 
+            # Extract information from partition table for creating custom FS
+            ls -l ${RUNTIME_BIN}
+            echo dd if=${RUNTIME_BIN} of=partitions.bin bs=4096 count=1 skip=8 # 0x8000
+            dd if=${RUNTIME_BIN} of=partitions.bin bs=4096 count=1 skip=8 # 0x8000
+
+            echo "Partition table:"
+            python3 ${SUPPORT_DIR}/python/gen_esp32part.py partitions.bin | tee partitions.txt
+
+            USER_FS_OFFSET=$(grep user_fs partitions.txt | \
+                sed -e 's/user_fs,data,fat,//' \
+                -e 's/,.*//' | \
+                tr -d '\n')
+
+            USER_FS_SIZE_KB=$(grep user_fs partitions.txt | \
+                sed -e 's/K,.*$//' \
+                -e 's/.*,//' | \
+                tr -d '\n')
+            USER_FS_SIZE=$((USER_FS_SIZE_KB * 1024))
+            echo "User FS offset: ${USER_FS_OFFSET}; size: ${USER_FS_SIZE}"
+
             # Create an empty FAT filesystem image
-            dd if=/dev/zero of=circuitpython_fs.img bs=1216000 count=1
+            echo dd if=/dev/zero of=circuitpython_fs.img bs=${USER_FS_SIZE} count=1
+            dd if=/dev/zero of=circuitpython_fs.img bs=${USER_FS_SIZE} count=1
             mkfs.fat -S 512 circuitpython_fs.img
 
             # Mount the image and copy the code.py file into it
-            mkdir mountpoint
+            mkdir -p mountpoint
             sudo mount -o loop circuitpython_fs.img mountpoint
             sudo cp code.py mountpoint/
             sudo umount mountpoint
 
-            cp ${RUNTIME_BIN} ${OUTPUT_BIN}
+            # cp ${RUNTIME_BIN} ${OUTPUT_BIN}
 
-            esptool.py --chip ${TARGET} merge_bin -o ${OUTPUT_BIN} --flash_mode dio --flash_size 4MB 0x00 ${RUNTIME_BIN} 0x2d0000 circuitpython_fs.img
+            echo esptool.py --chip ${TARGET} merge_bin -o ${OUTPUT_BIN} --flash_mode dio --flash_size 8MB 0x00 ${RUNTIME_BIN} ${USER_FS_OFFSET} circuitpython_fs.img
+            file ${OUTPUT_BIN}
+            esptool.py --chip ${TARGET} merge_bin -o ${OUTPUT_BIN} --flash_mode dio --flash_size 8MB 0x00 ${RUNTIME_BIN} ${USER_FS_OFFSET} circuitpython_fs.img
 
             # Prepare Wokwi test
             cp ${SUPPORT_DIR}/wokwi/diagram-${TARGET}.json diagram.json
@@ -140,7 +177,7 @@ jobs:
               --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
 
             # Extract heap size (you might need to adjust the parsing command)
-            HEAP_SIZE=$(grep 'Minimum free heap size' ${OUTPUT_TXT} | sed -e 's/Minimum free heap size: //' -e 's/ bytes//')
+            HEAP_SIZE=$(grep 'Minimum free heap size' ${OUTPUT_TXT} | tr -d '\n' | sed -e 's/Minimum free heap size: //' -e 's/ bytes//')
 
             # Add a new record to the JSON database
             jq --arg target "$TARGET" \
