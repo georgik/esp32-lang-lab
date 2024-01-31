@@ -125,6 +125,7 @@ jobs:
             echo "User FS offset: ${USER_FS_OFFSET}; size: ${USER_FS_SIZE}"
 
             # Create an empty FAT filesystem image
+            echo dd if=/dev/zero of=circuitpython_fs.img bs=${USER_FS_SIZE} count=1
             dd if=/dev/zero of=circuitpython_fs.img bs=${USER_FS_SIZE} count=1
             mkfs.fat -S 512 circuitpython_fs.img
 
