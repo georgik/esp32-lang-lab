@@ -137,7 +137,7 @@ jobs:
 
             echo esptool.py --chip ${TARGET} merge_bin -o ${OUTPUT_BIN} --flash_mode dio --flash_size 4MB 0x00 ${RUNTIME_BIN} ${USER_FS_OFFSET} circuitpython_fs.img
             file ${OUTPUT_BIN}
-            #esptool.py --chip ${TARGET} merge_bin -o ${OUTPUT_BIN} --flash_mode dio --flash_size 4MB 0x00 ${RUNTIME_BIN} ${USER_FS_OFFSET} circuitpython_fs.img
+            esptool.py --chip ${TARGET} merge_bin -o ${OUTPUT_BIN} --flash_mode dio --flash_size 8MB 0x00 ${RUNTIME_BIN} ${USER_FS_OFFSET} circuitpython_fs.img
 
             # Prepare Wokwi test
             cp ${SUPPORT_DIR}/wokwi/diagram-${TARGET}.json diagram.json
