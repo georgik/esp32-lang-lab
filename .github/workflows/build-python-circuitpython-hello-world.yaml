@@ -106,6 +106,7 @@ jobs:
 
             # Extract information from partition table for creating custom FS
             ls -l ${RUNTIME_BIN}
+            echo dd if=${RUNTIME_BIN} of=partitions.bin bs=4096 count=1 skip=8 # 0x8000
             dd if=${RUNTIME_BIN} of=partitions.bin bs=4096 count=1 skip=8 # 0x8000
 
             echo "Partition table:"
