@@ -57,114 +57,8 @@ jobs:
           WOKWI_CLI_TOKEN: ${{ secrets.WOKWI_CLI_TOKEN }}
         shell: bash
         run: |
-          # source path to wokwi-cli
-          export PATH=$PATH:${HOME}/bin
-
-          export SUPPORT_DIR="`pwd`/support"
-          export PROJECT="`pwd`/examples/python/circuitpython/hello_world/"
-
-          # Install jq - workaround when running in the image without jq
-          #apt-get update && apt-get install -y jq
-
-          echo "Project path: ${PROJECT}"
-          cd ${PROJECT}
-
-          # Prepare report
-          echo '[]' > results.json
-          # Define URL prefixes and binary names for each target
-          declare -A URL_PREFIXES
-          declare -A BINARIES
-
-          URL_PREFIXES[esp32]="https://downloads.circuitpython.org/bin/doit_esp32_devkit_v1/en_US"
-          BINARIES[esp32]="adafruit-circuitpython-doit_esp32_devkit_v1-en_US-8.2.9.bin"
-
-          URL_PREFIXES[esp32s2]="https://downloads.circuitpython.org/bin/espressif_esp32s2_devkitc_1_n4/en_US"
-          BINARIES[esp32s2]="adafruit-circuitpython-espressif_esp32s2_devkitc_1_n4-en_US-8.2.9.bin"
-
-          URL_PREFIXES[esp32s3]="https://downloads.circuitpython.org/bin/espressif_esp32s3_devkitm_1_n8/en_US"
-          BINARIES[esp32s3]="adafruit-circuitpython-espressif_esp32s3_devkitm_1_n8-en_US-8.2.9.bin"
-
-          #for TARGET in esp32 esp32s2 esp32s3 esp32c3 esp32c6 esp32h2; do
-          for TARGET in esp32 esp32s2 esp32s3; do
-
-            DOWNLOAD_PREFIX=${URL_PREFIXES[$TARGET]}
-            RUNTIME_BIN=${BINARIES[$TARGET]}
-
-            echo "Downloading CircuitPython for ${TARGET} from ${DOWNLOAD_PREFIX}/${RUNTIME_BIN}"
-            curl -L ${DOWNLOAD_PREFIX}/${RUNTIME_BIN} -o ${RUNTIME_BIN}
-
-            echo "Building ${TARGET}"
-            OUTPUT_PREFIX="python-circuitpython-hello-world-${TARGET}-${{ github.event.inputs.release_tag }}"
-            OUTPUT_BIN="out.bin"
-            OUTPUT_TXT="${OUTPUT_PREFIX}.txt"
-
-            # If TARGET is a substring in SKIP_PROJECTS, skip it
-            #if echo "${{ github.event.inputs.skip_projects }}" | grep -q "${TARGET}"; then
-            #  echo "Skipping $TARGET"
-            #  continue
-            #fi
-
-            # Extract information from partition table for creating custom FS
-            ls -l ${RUNTIME_BIN}
-            echo dd if=${RUNTIME_BIN} of=partitions.bin bs=4096 count=1 skip=8 # 0x8000
-            dd if=${RUNTIME_BIN} of=partitions.bin bs=4096 count=1 skip=8 # 0x8000
-
-            echo "Partition table:"
-            python3 ${SUPPORT_DIR}/python/gen_esp32part.py partitions.bin | tee partitions.txt
-
-            USER_FS_OFFSET=$(grep user_fs partitions.txt | \
-                sed -e 's/user_fs,data,fat,//' \
-                -e 's/,.*//' | \
-                tr -d '\n')
-
-            USER_FS_SIZE_KB=$(grep user_fs partitions.txt | \
-                sed -e 's/K,.*$//' \
-                -e 's/.*,//' | \
-                tr -d '\n')
-            USER_FS_SIZE=$((USER_FS_SIZE_KB * 1024))
-            echo "User FS offset: ${USER_FS_OFFSET}; size: ${USER_FS_SIZE}"
-
-            # Create an empty FAT filesystem image
-            echo dd if=/dev/zero of=circuitpython_fs.img bs=${USER_FS_SIZE} count=1
-            dd if=/dev/zero of=circuitpython_fs.img bs=${USER_FS_SIZE} count=1
-            mkfs.fat -S 512 circuitpython_fs.img
-
-            # Mount the image and copy the code.py file into it
-            mkdir -p mountpoint
-            sudo mount -o loop circuitpython_fs.img mountpoint
-            sudo cp code.py mountpoint/
-            sudo umount mountpoint
-
-            # cp ${RUNTIME_BIN} ${OUTPUT_BIN}
-
-            echo esptool.py --chip ${TARGET} merge_bin -o ${OUTPUT_BIN} --flash_mode dio --flash_size 8MB 0x00 ${RUNTIME_BIN} ${USER_FS_OFFSET} circuitpython_fs.img
-            file ${OUTPUT_BIN}
-            esptool.py --chip ${TARGET} merge_bin -o ${OUTPUT_BIN} --flash_mode dio --flash_size 8MB 0x00 ${RUNTIME_BIN} ${USER_FS_OFFSET} circuitpython_fs.img
-
-            # Prepare Wokwi test
-            cp ${SUPPORT_DIR}/wokwi/diagram-${TARGET}.json diagram.json
-
-            echo '[wokwi]' > wokwi.toml
-            echo 'version = 1' >> wokwi.toml
-            echo "elf = \"${OUTPUT_BIN}\"" >> wokwi.toml
-            echo "firmware = \"${OUTPUT_BIN}\"" >> wokwi.toml
-
-            # Run Wokwi test
-            wokwi-cli --timeout 15000 \
-              --timeout-exit-code 0 \
-              --serial-log-file ${PROJECT}/${OUTPUT_TXT} \
-              --elf ${OUTPUT_BIN} \
-              "."
-
-            # Upload binary
-            # asset_path="${PROJECT}/${OUTPUT_BIN}"
-            # asset_name="${OUTPUT_PREFIX}.bin"
-            # curl \
-            #   --request POST \
-            #   --header "authorization: Bearer $GITHUB_TOKEN" \
-            #   --header "Content-Type: application/octet-stream" \
-            #   --data-binary "@$asset_path" \
-            #   --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
+          for TARGET in esp32 esp32s2 esp32s3 esp32c3 esp32c6 esp32h2; do
+            ../tests/python/circuitpython/test-circuitpython.sh esp32c3 "`pwd`" "${{ github.event.inputs.release_tag }}" > "${PROJECT}/${OUTPUT_TXT}"
 
             # Upload log
             asset_path="${PROJECT}/${OUTPUT_TXT}"
@@ -203,17 +97,6 @@ jobs:
                   timestamp: $timestamp
                 }]' results.json > temp.json && mv temp.json results.json
 
-            # If skip-wokwi-test.toml exists, skip Wokwi test
-            #if [ ! -f "skip-wokwi-test.toml" ]; then
-            #    asset_path="/home/esp/project/${TARGET}/screenshot.png"
-            #    asset_name="spooky-maze-${TARGET}-${{ github.event.inputs.release_tag }}.png"
-            #    curl \
-            #    --request POST \
-            #    --header "authorization: Bearer $GITHUB_TOKEN" \
-            #    --header "Content-Type: application/octet-stream" \
-            #    --data-binary "@$asset_path" \
-            #    --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}"
-            #fi
           done
 
           # Generate report

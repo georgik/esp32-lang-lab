@@ -11,6 +11,6 @@
         "attrs": { "builder": "esp-idf" }
       }
     ],
-    "connections": [ [ "esp:TX", "$serialMonitor:RX", "", [] ], [ "esp:RX", "$serialMonitor:TX", "", [] ] ],
+    "connections": [ ],
     "dependencies": {}
   }

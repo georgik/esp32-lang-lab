@@ -46,7 +46,7 @@ Then the application waits for 10 seconds before rebooting.
 | CPU Cores   | 1          |            |               |             |             |          |      |
 | Features    | WiFi/BLE   |            |               |             |             |          |      |
 | Flash size  | 2MB [^1]   |            |               |             |             |          |      |
-| Free heap   | 327840     |            |               |             | 322556      | 327124   |      |
+| Free heap   | 327840     |            | 129808        |             | 322556      | 327124   |      |
 
 ### Results for ESP32-C6:
 

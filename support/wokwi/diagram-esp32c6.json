@@ -8,9 +8,9 @@
         "id": "esp",
         "top": 0,
         "left": 0,
-        "attrs": { "builder": "esp-idf" }
+        "attrs": { }
       }
     ],
-    "connections": [ [ "esp:TX", "$serialMonitor:RX", "", [] ], [ "esp:RX", "$serialMonitor:TX", "", [] ] ],
+    "connections": [ ],
     "dependencies": {}
   }
