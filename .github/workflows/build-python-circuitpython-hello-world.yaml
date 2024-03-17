@@ -23,7 +23,7 @@ jobs:
         id: get_release
         with:
           route: GET /repos/{owner}/{repo}/releases/tags/${{ github.event.inputs.release_tag }}
-          owner: georgik
+          owner: tyeth
           repo: esp32-lang-lab
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

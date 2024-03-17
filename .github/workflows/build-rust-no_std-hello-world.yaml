@@ -23,7 +23,7 @@ jobs:
         id: get_release
         with:
           route: GET /repos/{owner}/{repo}/releases/tags/${{ github.event.inputs.release_tag }}
-          owner: georgik
+          owner: tyeth
           repo: esp32-lang-lab
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -59,7 +59,7 @@ jobs:
           set -e
 
           pwd
-          git clone --depth 1 --branch ${{ github.ref_name }} https://github.com/georgik/esp32-lang-lab.git esp32-lang-lab
+          git clone --depth 1 --branch ${{ github.ref_name }} https://github.com/tyeth/esp32-lang-lab.git esp32-lang-lab
       - name: Build and upload binaries
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

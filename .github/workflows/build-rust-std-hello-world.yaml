@@ -23,7 +23,7 @@ jobs:
         id: get_release
         with:
           route: GET /repos/{owner}/{repo}/releases/tags/${{ github.event.inputs.release_tag }}
-          owner: georgik
+          owner: tyeth
           repo: esp32-lang-lab
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -48,7 +48,7 @@ jobs:
           cd /home/esp
 
           pwd
-          git clone --depth 1 --branch ${{ github.ref_name }} https://github.com/georgik/esp32-lang-lab.git esp32-lang-lab
+          git clone --depth 1 --branch ${{ github.ref_name }} https://github.com/tyeth/esp32-lang-lab.git esp32-lang-lab
 
           set +e # Workaround for Exit code 2 exit code installation
           curl -L https://wokwi.com/ci/install.sh | sh
