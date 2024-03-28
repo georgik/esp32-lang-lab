@@ -1,0 +1,11 @@
+.{
+    .name = "hello World!",
+    .version = "0.1.0",
+    .dependencies = .{
+        .idf = .{
+            .url = "git+https://github.com/kassane/zig-esp-idf-sample#71c342b77863f56ded6748f49a10ecab5f67bbc0",
+            .hash = "1220e30e27fd2c1e09684c7eb9584584ed43bd4df1b5127ba149fea3fd9a17ea5045",
+        },
+    },
+    .paths = .{""},
+}
