@@ -25,7 +25,7 @@ Then the application waits for 10 seconds before rebooting.
 | CPU Cores   | 1          | 1          |               |             |             |          |      |            |
 | Features    | WiFi       | WiFi       |               |             |             |          |      |            |
 | Flash size  | 2MB [^1]   | 4MB        |               |             |             |          |      |            |
-| Free heap   | 246696     | 229688     | 70848         | 2059520     | 178176 [^3] | 246844   |      |            |
+| Free heap   | 246696     | 229688     | 70848         | 2059520     | 178176 [^3] | 246844   |      | 248180     |
 
 
 ### Results for ESP32-S3:
@@ -36,7 +36,7 @@ Then the application waits for 10 seconds before rebooting.
 | CPU Cores   | 2          | 2          |               |             |             |          |      |            |
 | Features    | WiFi/BLE   | WiFi/BLE   |               |             |             |          |      |            |
 | Flash size  | 2MB [^1]   | 8MB external |             |             |             |          |      |            |
-| Free heap   | 386744     | 36992      |  150432       |             |  332800     | 388016   |      |            |
+| Free heap   | 386744     | 36992      |  150432       |             |  332800     | 388016   |      | 389976     |
 
 ### Results for ESP32-C3:
 
@@ -46,7 +46,7 @@ Then the application waits for 10 seconds before rebooting.
 | CPU Cores   | 1          |            |               |             |             |          |      |            |
 | Features    | WiFi/BLE   |            |               |             |             |          |      |            |
 | Flash size  | 2MB [^1]   |            |               |             |             |          |      |            |
-| Free heap   | 327840     |            | 129808        |             | 322556      | 327124   |      |            |
+| Free heap   | 327840     |            | 129808        |             | 322556      | 327124   |      | 329700     |
 
 ### Results for ESP32-C6:
 
@@ -56,7 +56,7 @@ Then the application waits for 10 seconds before rebooting.
 | CPU Cores   | 1          |            |               |             |             |          |      |            |
 | Features    | WiFi/BLE 802.15.4 (Zigbee/Thread) | |   |             |             |          |      |            |
 | Flash size  | 2MB (1.)   |            |               |             |             |          |      |            |
-| Free heap   | 468852     |            |               |             | 440316      | 471068   |      |            |
+| Free heap   | 468852     |            |               |             | 440316      | 471068   |      | 471208     |
 
 ### Results for ESP32-H2:
 
@@ -66,7 +66,7 @@ Then the application waits for 10 seconds before rebooting.
 | CPU Cores   | 1          |            |               |             |             |          |      |            |
 | Features    | BLE, 802.15.4 (Zigbee/Thread)   |   |   |             |             |          |      |            |
 | Flash size  | 2MB [^1]   |            |               |             |             |          |      |            |
-| Free heap   | 262644     |            |               |             | 252924      | 265060   |      |            |
+| Free heap   | 262644     |            |               |             | 252924      | 265060   |      | 264824     |
 
 ### Results for ESP32-P4:
 
