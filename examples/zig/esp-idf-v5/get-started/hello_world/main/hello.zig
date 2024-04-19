@@ -17,23 +17,21 @@ export fn app_main() callconv(.C) void {
         \\
     , .{ builtin.zig_version_string, @tagName(builtin.zig_backend) });
 
-    idf.ESP_LOG(allocator, tag,
-        \\[ESP-IDF Info]
-        \\* Version: {s}
-        \\
-    , .{idf.Version.get().toString(allocator)});
-
-    idf.ESP_LOG(allocator, tag,
+    idf.ESP_LOG(
+        allocator,
+        tag,
         \\[Memory Info]
         \\* Total: {d}
         \\* Free: {d}
         \\* Minimum: {d}
         \\
-    , .{
-        heap.totalSize(),
-        heap.freeSize(),
-        heap.minimumFreeSize(),
-    });
+    ,
+        .{
+            heap.totalSize(),
+            heap.freeSize(),
+            heap.minimumFreeSize(),
+        },
+    );
 
     idf.ESP_LOG(allocator, tag, "Let's have a look at your shiny {s} - {s} system! :)\n\n", .{
         @tagName(builtin.cpu.arch),

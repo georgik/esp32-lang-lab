@@ -6,7 +6,7 @@ set(include_dirs $<TARGET_PROPERTY:${COMPONENT_LIB},INCLUDE_DIRECTORIES> ${CMAKE
 # Detect target architecture and platform
 if(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "x86_64")
     set(TARGET_ARCH "x86_64")
-elseif(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "aarch64")
+elseif(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64")
     set(TARGET_ARCH "aarch64")
 else()
     message(FATAL_ERROR "Unsupported architecture")
