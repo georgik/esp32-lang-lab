@@ -118,29 +118,31 @@ jobs:
               "."
 
             # Upload binary
-            # asset_path="${PROJECT}/${OUTPUT_BIN}"
-            # asset_name="${OUTPUT_PREFIX}.bin"
-            # echo "Uploading $asset_path as $asset_name"
-            # curl \
-            #   --request POST \
-            #   --header "authorization: Bearer $GITHUB_TOKEN" \
-            #   --header "Content-Type: application/octet-stream" \
-            #   --data-binary "@$asset_path" \
-            #   --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}" || true
+            asset_path="${PROJECT}/${OUTPUT_BIN}"
+            asset_name="${OUTPUT_PREFIX}.bin"
+            echo "Uploading $asset_path as $asset_name"
+            curl \
+              --request POST \
+              --header "authorization: Bearer $GITHUB_TOKEN" \
+              --header "Content-Type: application/octet-stream" \
+              --data-binary "@$asset_path" \
+              --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}" || true
 
-            # # Upload log
-            # asset_path="${PROJECT}/${OUTPUT_TXT}"
-            # asset_name="${OUTPUT_TXT}"
-            # echo "Uploading $asset_path as $asset_name"
-            # curl \
-            #   --request POST \
-            #   --header "authorization: Bearer $GITHUB_TOKEN" \
-            #   --header "Content-Type: application/octet-stream" \
-            #   --data-binary "@$asset_path" \
-            #   --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}" || true
+            # Upload log
+            asset_path="${PROJECT}/${OUTPUT_TXT}"
+            asset_name="${OUTPUT_TXT}"
+            echo "Uploading $asset_path as $asset_name"
+            curl \
+              --request POST \
+              --header "authorization: Bearer $GITHUB_TOKEN" \
+              --header "Content-Type: application/octet-stream" \
+              --data-binary "@$asset_path" \
+              --url "${{ needs.get_release.outputs.upload_url }}?name=${asset_name}" || true
 
             # Extract heap size (you might need to adjust the parsing command)
             HEAP_SIZE=$(grep 'Minimum free heap size' ${OUTPUT_TXT} | sed -e 's/Minimum free heap size: //' -e 's/ bytes//')
+
+            echo "Heap size: $HEAP_SIZE bytes"
 
             # Add a new record to the JSON database
             jq --arg target "$TARGET" \
@@ -164,7 +166,7 @@ jobs:
                   note: $note,
                   version: $version,
                   timestamp: $timestamp
-                }]' results.json > temp.json && mv temp.json results.json
+                }]' results.json > temp.json && mv temp.json results.json || echo "Failed to generate jq"
 
             # If skip-wokwi-test.toml exists, skip Wokwi test
             #if [ ! -f "skip-wokwi-test.toml" ]; then

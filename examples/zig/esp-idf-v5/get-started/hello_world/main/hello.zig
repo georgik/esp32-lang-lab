@@ -23,7 +23,7 @@ export fn app_main() callconv(.C) void {
         \\[Memory Info]
         \\* Total: {d}
         \\* Free: {d}
-        \\* Minimum: {d}
+        \\* Minimum free heap size: {d}
         \\
     ,
         .{
